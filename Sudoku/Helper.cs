@@ -14,14 +14,19 @@ public class Helper
     static private Random random = new Random();
 
 
-
-    static public bool AreNumbersUsed(ArrayList usedNumbers, int[] numbers)
+    /// <summary>
+    /// Only compares the row aspect of the argument with an ArrayList of numbers.
+    /// </summary>
+    /// <param name="usedNumbers"></param>
+    /// <param name="argument"></param>
+    /// <returns> Whether a row in the argument was already used. </returns>
+    static public bool AreNumbersUsed(bool[] usedNumbers, int[] argument)
     {
-        int[] rows = { numbers[2], numbers[3], numbers[4] };
+        int[] rows = { argument[2], argument[3], argument[4] };
 
         foreach (int row in rows)
         {
-            if (usedNumbers.Contains(row))
+            if (usedNumbers[row] == true)
             {
                 return true;
             }
@@ -33,13 +38,15 @@ public class Helper
 
 
 
-
-    /*
-     * reorders the arguments to fit the wished layout
-     * 
-     * Layout: { first column, second column, first row, second row, third row }
-     * 
-     */
+    /// <summary>
+    /// Reorders the arguments to fit the wished layout.
+    /// </summary>
+    /// <param name="columns"></param>
+    /// <param name="blockcol"></param>
+    /// <param name="firstRow"></param>
+    /// <param name="secondRow"></param>
+    /// <param name="thirdRow"></param>
+    /// <returns> { first column, second column, first row, second row, third row } </returns> 
     static public int[] ConstructResult(int[] columns, int blockcol, int firstRow, int secondRow, int thirdRow)
     {
         int[] result = new int[] { columns[0] + blockcol*3,
@@ -49,16 +56,6 @@ public class Helper
             thirdRow + 6 };
 
 
-        /*
-        Console.Write("\nConstructed Result: ");
-
-        foreach (int i in result)
-        {
-            Console.Write(i + " ");
-        }
-        Console.WriteLine("\n");
-        */
-
         return result;
     }
 
@@ -66,17 +63,14 @@ public class Helper
 
 
 
-    //returns the indices of the matching numbers
-    static public ArrayList SharedNumbers(int[] numbers, int[] row)
+    /// <summary>
+    /// Returns the indices of the matching numbers.
+    /// </summary>
+    /// <param name="numbers"></param>
+    /// <param name="row"></param>
+    /// <returns> An ArrayList of arrays with the indices of matching numbers. </returns>
+    static public ArrayList SharedNumbers(int[] numbers, int[] compare)
     {
-        /*
-            Console.Write("Shared Numbers in: ");
-            foreach (int i in numbers) Console.Write(i);
-            Console.Write(" ");
-            foreach (int j in row) Console.Write(j);
-            Console.WriteLine(" "); 
-        */
-
 
         ArrayList result = new ArrayList();
 
@@ -84,33 +78,18 @@ public class Helper
         for (int i = 0; i < numbers.Length; i++)
         {
             //in combination with each number in the comparison row
-            for (int j = 0; j < row.Length; j++)
+            for (int j = 0; j < compare.Length; j++)
             {
 
                 //in case the numbers in those positions are the same
-                if (numbers[i] == row[j])
+                if (numbers[i] == compare[j])
                 {
-                    /*
-                    Console.WriteLine($":{numbers[i]} ({i}) == {row[j]} ({j})");
-                    */
-
                     //add the positions to the result
                     result.Add(new int[] { i, j });
                 }
             }
         }
 
-        /*
-            for (int i = 0; i < result.Count; i++)
-            {
-                int[] temp = (int[])result[i];
-                for (int j = 0; j < temp.Length; j++)
-                {
-                    Console.Write(temp[j]);
-                }
-                Console.Write("  ");
-            }
-        */
         
         return result;
     }

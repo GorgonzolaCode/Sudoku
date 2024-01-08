@@ -8,8 +8,9 @@ using System;
 
 
 //create a new and shuffled sudoku
-Sudoku sudoku = Sudoku.GetBasicSudoku();
+Sudoku sudoku = new Sudoku();
 sudoku.FullShuffle();
+
 
 
 
@@ -39,32 +40,19 @@ while (true)
 
 
 
-/*
-if (cmd != null)
-{
-    for (int i = 0; i < cmd.Length; i++)
-    {
-        Console.WriteLine($"{cmd[i]}");
-    }
-}
-else Console.WriteLine("No");
-*/
-
-
-
 
 
 
 string GetCommand()
 {
 
-    Console.WriteLine("\n Enter a command to change one cell in the format of [column, row, new number].");
+    Console.WriteLine("\n Enter a command to change one cell in the format of [column, row, new number].\n Rows and columns start at 1.\n");
     return Console.ReadLine();
 
 }
 
 
-//retrieves three digits from a string and returns them in an int array, or null if there were not enough numbers
+// retrieves three digits from a string and returns them in an int array, or null if there were not enough numbers
 int[] RetrieveThreeNumbers(string command)
 {
     int[] result = { -1, -1, -1 };
@@ -74,8 +62,7 @@ int[] RetrieveThreeNumbers(string command)
     {
         if (Char.IsNumber(command.First()))
         {
-            result[counter] = (int)Char.GetNumericValue(command.First());
-            counter++;
+            result[counter++] = (int)Char.GetNumericValue(command.First());
         }
         
         command = command.Substring(1);

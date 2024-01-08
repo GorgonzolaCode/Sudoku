@@ -10,7 +10,11 @@ public class Sudoku
 {
 
     private int[,] board;
+    private bool shuffled = false;
 
+    /// <summary>
+    /// Creates a default sudoku.
+    /// </summary>
     public Sudoku()
     {
         //create a default board
@@ -28,79 +32,76 @@ public class Sudoku
     }
 
 
-
-    //returns a sudoku with random numbers in a basic layout
-    static public Sudoku GetBasicSudoku()
-    {
-        Sudoku result = new Sudoku();
-        int[] numbers = Helper.GetNumbers();
-
-        for (int i = 0; i < 81; i++)
-        {
-            //swap each cell with its new value
-            result.Set(i / 9, i % 9, numbers[result.Get(i / 9, i % 9) - 1]);
-        }
-
-        return result;
-    }
-
-
-    //tells if a sudoku has no contradictions
+    /// <summary>
+    /// Tells if a sudoku has no contradictions.
+    /// </summary>
+    /// <returns> A boolean <c>true</c>, if there were no obvious contradictions. Otherwise a boolean <c>false</c>.</returns>
     public bool IsCorrect()
     {
         int temp;
         bool[] found;
 
         
-        //for every row
+        
         for (int row = 0; row < 9; row++)
         {
             found = new bool[9] { false, false, false,
                                   false, false, false,
                                   false, false, false };
 
-            //for every number in row
+            
             for (int col = 0; col < 9; col++)
             {
-                //check if it was already used
                 temp = board[row, col] - 1;
+
+                //skip empty cells
+                if (temp < 0) continue;
+
+                //check if number was already used
                 if (found[temp]) return false;
                 found[temp] = true;
             }
         }
 
 
-        //for every column
+        
         for (int col = 0; col < 9; col++)
         {
             found = new bool[9] { false, false, false,
                                   false, false, false,
                                   false, false, false };
 
-            //for every number in column
+            
             for (int row = 0; row < 9; row++)
             {
-                //check if it was already used
                 temp = board[row, col] - 1;
+
+                //skip empty cells
+                if (temp < 0) continue;
+
+                //check if number was already used
                 if (found[temp]) return false;
                 found[temp] = true;
             }
         }
 
 
-
-        //for every block
+        
         for (int block = 0; block < 9; block++)
         {
             found = new bool[9] { false, false, false,
                                   false, false, false,
                                   false, false, false };
 
-            //for every number in block
+            
             for (int cell = 0; cell < 9; cell++)
             {
-                //check if it was already used
                 temp = board[(block/3) * 3 + cell/3, (block%3) * 3 + cell%3] - 1;
+
+                //skip empty cells
+                if (temp < 0) continue;
+
+                //check if number was already used
                 if (found[temp]) return false;
                 found[temp] = true;
             }
@@ -111,7 +112,12 @@ public class Sudoku
     }
 
 
-    //returns the value of a cell
+    /// <summary>
+    /// Returns the value of a cell. Starts counting at 0.
+    /// </summary>
+    /// <param name="col"> column </param>
+    /// <param name="row"> row </param>
+    /// <returns> the value of a cell </returns>
     public int Get(int col, int row)
     {
         return board[row, col];
@@ -119,10 +125,13 @@ public class Sudoku
 
 
 
-    /*  
-     *  sets the value of one cell
-     *  starts at 0
-     */
+
+    /// <summary>
+    /// Sets the value of a coll. Starts counting at 0.
+    /// </summary>
+    /// <param name="col"> column </param>
+    /// <param name="row"> row </param>
+    /// <param name="value"> new value of a cell </param>
     public void Set(int col, int row, int value)
     {
         board[row, col] = value;
@@ -130,20 +139,27 @@ public class Sudoku
 
 
 
-    //clears console and draws the board
+    /// <summary>
+    /// Clears console and draws the board. Tells if the sudoku is still coherent.
+    /// </summary>
     public void Draw()
     {
-        //Console.Clear();
+        Console.Clear();
 
         for (int row = 0; row < board.GetLength(0); row++)
         {
+                //horizontal divider
+                if (row % 3 == 0) Console.WriteLine("+_________+_________+_________+");
+
+                
+                //first vertical divider
+                Console.Write("| ");
+
+
+            
             for (int col = 0; col < board.GetLength(1); col++)
             {
 
-                //horizontal divider
-                if (col == 0 && row % 3 == 0) { Console.WriteLine("________+_________+_________"); }
-
-                
                 //number
                 Console.Write(board[row, col]);
 
@@ -162,15 +178,21 @@ public class Sudoku
             Console.WriteLine();
         }
 
+        //last horizontal divider
+        Console.WriteLine("+_________+_________+_________+");
 
-        Console.WriteLine(IsCorrect());
+        if (IsCorrect()) Console.WriteLine("\n The sudoku has no contradictions.");
+        else Console.WriteLine("!!!The sudoku has a contradiction!!!");
     }
 
 
 
-    //uses all viable methods to shuffle a new sudoku
+    /// <summary>
+    /// Uses all viable methods to shuffle a sudoku.
+    /// </summary>
     public void FullShuffle()
     {
+        SwapNumbers();
         PartialSwap();
         Shuffle();
     }
@@ -178,7 +200,33 @@ public class Sudoku
 
 
 
+    /// <summary>
+    /// Swaps the numbers of the sudoku around. Doesn't change the fundamental layout.
+    /// </summary>
+    private void SwapNumbers()
+    {
+        int[] numbers = Helper.GetNumbers();
+        int temp;
 
+        for (int i = 0; i < 81; i++)
+        {
+            temp = board[i % 9, i / 9];
+
+            //skip empty cells
+            if (temp == 0) continue;
+
+            //swap each cell with its new value
+            board[i % 9, i / 9] = numbers[temp-1];
+        }
+
+    }
+
+
+
+
+    /// <summary>
+    /// Swaps around rows and columns partially.
+    /// </summary>
     private void PartialSwap()
     {
         PartialSwapRow();
@@ -186,18 +234,24 @@ public class Sudoku
     }
 
 
-    //swaps around partial rows in blocks (only before shuffling)
+
+
+    /// <summary>
+    /// Swaps around partial rows in blocks (only before shuffling).
+    /// </summary>
     private void PartialSwapRow()
     {
+        //don't execute if the sudoku has already been shuffled
+        if (shuffled) return;
 
         int[,] numbers = Helper.GetShuffleNumbers();
         int[] temp = new int[3];
 
 
-        //in each blockrow
+        
         for (int blockrow = 0; blockrow < 3; blockrow++)
         {
-            //in each column
+            
             for (int column = 0; column < 9; column++)
             {
                 //save the column
@@ -215,60 +269,72 @@ public class Sudoku
             }
         }
 
-
+        //set the flag so this method won't be executed again
+        shuffled = true;
     }
 
 
 
-    //searches for possible combinations and then swaps around partial columns
+
+    /// <summary>
+    /// Searches for and then swaps around partial columns.
+    /// </summary>
     private void PartialSwapCol()
     {
-        ArrayList usedRows;
-        ArrayList possibleColumns;
+        bool[] usedRows;
+        ArrayList possibleSwaps;
         int[] arguments = new int[0];
 
-        //for each block column
-        for (int blockcol = 0; blockcol < 3; blockcol++)
+        
+        for (int blockCol = 0; blockCol < 3; blockCol++)
         {
-            usedRows = new ArrayList();
+            usedRows = new bool[] { false, false, false, false, false, false, false, false, false };
 
-            possibleColumns = PossibleColumn(blockcol);
+            possibleSwaps = PossibleSwapCol(blockCol);
 
-            //for every possible partial shuffle in the block column
-            for (int i = 0; i < possibleColumns.Count; i++)
+            //for every possible partial swap in the block column
+            for (int i = 0; i < possibleSwaps.Count; i++)
             {
                 //shuffle only half the time
                 if (Helper.GetRandomBool()) continue;
 
 
-                arguments = (int[])possibleColumns[i];
+                arguments = (int[])possibleSwaps[i];
 
 
                 if (Helper.AreNumbersUsed(usedRows, arguments)) continue;
 
+                //execute swap and update the array of used rows
                 PartialSwapCol(arguments);
-                usedRows.Add(arguments[2]);
-                usedRows.Add(arguments[3]);
-                usedRows.Add(arguments[4]);
+                usedRows[arguments[2]] = true;
+                usedRows[arguments[3]] = true;
+                usedRows[arguments[4]] = true;
             }
 
         }
     }
 
-    /*
-     * takes arguments in the form of
-     * 
-     * Layout: { first column, second column, first row, second row, third row }
-     * 
-     * reorders board accordingly
-     */
+
+
+
+
+
+    /// <summary>
+    /// Swaps around partial columns.
+    /// Takes arguments in the form of:
+    /// 
+    /// <code>{ first column, second column, first row, second row, third row }</code>
+    /// 
+    /// Reorders board accordingly.
+    /// </summary>
+    /// <param name="arguments"> { first column, second column, first row, second row, third row } </param>
     private void PartialSwapCol(int[] arguments)
     {
         int[] columns = { arguments[0], arguments[1] };
         int[] rows = { arguments[2], arguments[3], arguments[4] };
         int temp;
 
-        //for each specified row
+
         foreach (int row in rows)
         {
             //swap the columns
@@ -281,90 +347,89 @@ public class Sudoku
 
 
 
-    
 
 
-    /*
-     * returns ArrayList of which parts of which columns can be used for a partial swap
-     * 
-     * Layout: { first column, second column, first row, second row, third row }
-     * 
-     */
-    private ArrayList PossibleColumn(int blockcol)
+
+    /// <summary>
+    /// Returns an ArrayList of which parts of which columns can be used for a partial swap.
+    /// <code> { first column, second column, first row, second row, third row } </code>
+    /// </summary>
+    /// <param name="blockcol"> the block column in focus </param>
+    /// <returns> ArrayList of int[]{ first column, second column, first row, second row, third row } </returns> 
+    private ArrayList PossibleSwapCol(int blockcol)
     {
         ArrayList result = new ArrayList();
 
         
-        ArrayList shared;
-        ArrayList found;
+        ArrayList matchingArray;
+        ArrayList foundArray;
         int[] firstBlockRow;
         int[] secondBlockRow;
         int[] thirdBlockRow;
-        int[] partners = new int[] { 0, 0, -1 };         //third element only for SharedNumbers()
-        int[] sharedPositions;
+        int[] partners = new int[] { 0, 0 };
+        int[] matchingPositions;
         int[] construct;
-        int[] foundFirst;
-        int[] foundSecond;
+        int[] foundFirstPair;
+        int[] foundSecondPair;
 
 
 
-        //for each row in the first block
+        
         for (int startRow = 0; startRow < 3; startRow++)
         {
 
-            //the numbers of the row in the first block
+            
             firstBlockRow = GetBlockRow(blockcol, 0, startRow);
 
-            //for each comparison row in second block
+            
             for (int compareRow = 0; compareRow < 3; compareRow++)
             {
-                //the numbers of the comparison row in the second block
+                
                 secondBlockRow = GetBlockRow(blockcol, 1, compareRow);
 
-                //get the position of any shared numbers
-                shared = Helper.SharedNumbers(firstBlockRow, secondBlockRow);
+                //get the position of any matching numbers
+                matchingArray = Helper.SharedNumbers(firstBlockRow, secondBlockRow);
 
 
                 //for each pair of matching numbers
-                for (int i = 0; i < shared.Count; i++)
+                for (int matching = 0; matching < matchingArray.Count; matching++)
                 {
-                    sharedPositions = (int[])shared[i];
+                    matchingPositions = (int[])matchingArray[matching];
 
                     //save the partner numbers
-                    partners[0] = board[startRow, sharedPositions[1] + blockcol*3];
-                    partners[1] = board[compareRow + 3, sharedPositions[0] + blockcol * 3];
+                    partners[0] = board[startRow, matchingPositions[1] + blockcol*3];
+                    partners[1] = board[compareRow + 3, matchingPositions[0] + blockcol * 3];
 
 
 
                     
-                    //for each row in third block
                     for (int finalRow = 0; finalRow < 3; finalRow++)
                     {
-                        //the numbers of the row in the final block
+                        
                         thirdBlockRow = GetBlockRow(blockcol, 2, finalRow);
 
-                        //get the position of matching numbers
-                        found = Helper.SharedNumbers(partners, thirdBlockRow);
+                        //get the position of any matching numbers
+                        foundArray = Helper.SharedNumbers(partners, thirdBlockRow);
 
 
-                        //if there were not 2 matches it didn't work
-                        if (found.Count < 2) continue;
+                        //if there were not 2 matches: it didn't work
+                        if (foundArray.Count < 2) continue;
 
+                        
+                        foundFirstPair = (int[])foundArray[0];
+                        foundSecondPair = (int[])foundArray[1];
 
-                        foundFirst = (int[])found[0];
-                        foundSecond = (int[])found[1];
-
-                        //check if the numbers are in the right column
-                        if ((foundFirst[1] != sharedPositions[0])
+                        //check if the numbers in the third block are in the same column as the numbers from the previous two blocks
+                        if ((foundFirstPair[1] != matchingPositions[0])
                             ||  
-                            (foundSecond[1] != sharedPositions[1]) )
+                            (foundSecondPair[1] != matchingPositions[1]) )
                         {
                             //if not, continue
                             continue;
                         }
 
                         //add the combination as a construct to the result
-                        construct = Helper.ConstructResult(sharedPositions, blockcol, startRow, compareRow, finalRow);
+                        construct = Helper.ConstructResult(matchingPositions, blockcol, startRow, compareRow, finalRow);
                         result.Add(construct);
 
                     }
@@ -382,41 +447,11 @@ public class Sudoku
 
 
 
-    
 
 
-
-    /*
-    public void Cycle()
-    {
-        int[] temp = new int[9];
-
-        for (int col = 0; col < 9; col++)
-        {
-            for (int row = 0; row < 9; row++)
-            {
-                //copy the column
-                temp[row] = board[row, col];
-
-            }
-
-            for (int row = 0; row < 9; row++)
-            {
-                //insert the column in a cycled way
-                board[row, col] = temp[
-                    (row + col) % 3             //cycle within block
-                    +
-                    (row / 3) * 3               //offset for block
-                    ];
-            }
-
-
-        }
-    }
-    */
-
-
-
+    /// <summary>
+    /// Shuffles the sudoku by swapping rows and columns within blocks, and swapping block rows and block columns.
+    /// </summary>
     private void Shuffle()
     {
 
@@ -429,122 +464,129 @@ public class Sudoku
 
         used = ShuffleColumns(used, shuffles);
 
-        used = ShuffleBoxesHor(used, shuffles);
+        used = ShuffleBlockRows(used, shuffles);
 
-        used = ShuffleBoxesVert(used, shuffles);
+        used = ShuffleBlockColumns(used, shuffles);
 
     }
 
 
 
+    /// <summary>
+    /// Swaps rows within all block rows.
+    /// </summary>
+    /// <param name="used"> how many of the shuffles were used </param>
+    /// <param name="shuffles"> list of possible shuffles </param>
+    /// <returns> the updated 'used' number </returns>
     private int ShuffleRows(int used, int[,] shuffles)
     {
 
-        int[,] temp = { { 0, 0, 0, 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
+        int[,] temp = { 
+            { 0, 0, 0, 0, 0, 0, 0, 0, 0 }, 
+            { 0, 0, 0, 0, 0, 0, 0, 0, 0 } 
+        };
 
 
-        //in each block
-        for (int i = 0; i < 3; i++)
+        
+        for (int blockRow = 0; blockRow < 3; blockRow++)
         {
 
-            //in each row
-            for (int j = 0; j < 3; j++)
+            
+            for (int row = 0; row < 3; row++)
             {
 
                 //do nothing with row if it already is in the right place
-                if (j == shuffles[used, j])
-                {
-                    continue;
-                }
+                if (row == shuffles[used, row]) continue;
+
 
                 //save the row if it could be used later
-                if (j < 2)
+                if (row < 2)
                 {
                     //copy the row into temp
-                    for (int k = 0; k < 9; k++)
+                    for (int column = 0; column < 9; column++)
                     {
-                        temp[j, k] = board[i * 3 + j, k];
+                        temp[row, column] = board[blockRow * 3 + row, column];
                     }
                 }
 
                 //overwrite the row...
-                if (shuffles[used, j] > j)
+                if (shuffles[used, row] > row)
                 {
                     //... with a later row
-                    for (int k = 0; k < 9; k++)
+                    for (int column = 0; column < 9; column++)
                     {
-                        board[i * 3 + j, k] = board[i * 3 + shuffles[used, j], k];
+                        board[blockRow * 3 + row, column] = board[blockRow * 3 + shuffles[used, row], column];
                     }
                 }
                 else
                 {
                     //... with a saved row
-                    for (int k = 0; k < 9; k++)
+                    for (int column = 0; column < 9; column++)
                     {
-                        board[i * 3 + j, k] = temp[shuffles[used, j], k];
+                        board[blockRow * 3 + row, column] = temp[shuffles[used, row], column];
                     }
                 }
 
             }
+
             used++;
 
         }
 
-
-
-
         return used;
-
 
     }
 
 
 
-
+    /// <summary>
+    /// Swaps columns within all block columns.
+    /// </summary>
+    /// <param name="used"> how many of the shuffles were used </param>
+    /// <param name="shuffles"> list of possible shuffles </param>
+    /// <returns> the updated 'used' number </returns>
     private int ShuffleColumns(int used, int[,] shuffles)
     {
         int[,] temp = { { 0, 0, 0, 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
 
 
-        //in each block
-        for (int i = 0; i < 3; i++)
+        for (int blockCol = 0; blockCol < 3; blockCol++)
         {
 
-            //in each column
-            for (int j = 0; j < 3; j++)
+            for (int col = 0; col < 3; col++)
             {
 
                 //do nothing with column if it already is in the right place
-                if (j == shuffles[used, j]) 
+                if (col == shuffles[used, col]) 
                 {
                     continue;
                 }
 
                 //save the column if it could be used later
-                if (j < 2)
+                if (col < 2)
                 {
                     //copy the column into temp
-                    for (int k = 0; k < 9; k++)
+                    for (int row = 0; row < 9; row++)
                     {
-                        temp[j, k] = board[k, i * 3 + j];
+                        temp[col, row] = board[row, blockCol * 3 + col];
                     }
                 }
 
                 //overwrite the column...
-                if (shuffles[used, j] > j)
+                if (shuffles[used, col] > col)
                 {
                     //... with a later column
-                    for (int k = 0; k < 9; k++)
+                    for (int row = 0; row < 9; row++)
                     {
-                        board[k, i * 3 + j] = board[k, i * 3 + shuffles[used, j]];
+                        board[row, blockCol * 3 + col] = board[row, blockCol * 3 + shuffles[used, col]];
                     }
                 }
                 else
                 {
                     //... with a saved column
-                    for (int k = 0; k < 9; k++)
+                    for (int row = 0; row < 9; row++)
                     {
-                        board[k, i * 3 + j] = temp[shuffles[used, j], k];
+                        board[row, blockCol * 3 + col] = temp[shuffles[used, col], row];
                     }
                 }
 
@@ -553,17 +595,19 @@ public class Sudoku
 
         }
 
-
-
-
         return used;
 
     }
 
 
 
-    //shuffles the boxes horizontally
-    private int ShuffleBoxesHor(int used, int[,] shuffles)
+    /// <summary>
+    /// Shuffles the rows of boxes.
+    /// </summary>
+    /// <param name="used"> how many of the shuffles were used </param>
+    /// <param name="shuffles"> list of possible shuffles </param>
+    /// <returns> the updated 'used' number </returns>
+    private int ShuffleBlockRows(int used, int[,] shuffles)
     {
         int[,] temp = new int[,]{
             { 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -575,48 +619,47 @@ public class Sudoku
            };
 
 
-        //each block
-        for (int i = 0; i<3; i++)
+        for (int blockRow = 0; blockRow<3; blockRow++)
         {
-            //do nothing with block if it already is in the right place
-            if (shuffles[used, i] == i)
+            //do nothing with block row if it already is in the right place
+            if (shuffles[used, blockRow] == blockRow)
             {
                 continue;
             }
 
-            //save the block if it could be used later
-            if (i < 2)
+            //save the block row if it could be used later
+            if (blockRow < 2)
             {
-                //copy the block into temp
-                for (int j = 0; j < 3; j++)
+                //copy the block row into temp
+                for (int row = 0; row < 3; row++)
                 {
-                    for (int k = 0; k < 9; k++)
+                    for (int col = 0; col < 9; col++)
                     {
-                        temp[i * 3 + j, k] = board[i * 3 + j, k];
+                        temp[blockRow * 3 + row, col] = board[blockRow * 3 + row, col];
                     }
                 }
             }
 
-            //overwrite the block...
-            if (shuffles[used, i] > i)
+            //overwrite the block row...
+            if (shuffles[used, blockRow] > blockRow)
             {
-                //... with a later block
-                for (int j = 0; j < 3; j++)
+                //... with a later block row
+                for (int row = 0; row < 3; row++)
                 {
-                    for (int k = 0; k < 9; k++)
+                    for (int col = 0; col < 9; col++)
                     {
-                        board[i * 3 + j, k] = board[shuffles[used, i] * 3 + j, k];
+                        board[blockRow * 3 + row, col] = board[shuffles[used, blockRow] * 3 + row, col];
                     }
                 }
             }
             else
             {
-                //... with a saved block
-                for (int j = 0; j < 3; j++)
+                //... with a saved blockrow
+                for (int row = 0; row < 3; row++)
                 {
-                    for (int k = 0; k < 9; k++)
+                    for (int col = 0; col < 9; col++)
                     {
-                        board[i * 3 + j, k] = temp[shuffles[used, i] * 3 + j, k];
+                        board[blockRow * 3 + row, col] = temp[shuffles[used, blockRow] * 3 + row, col];
                     }
                 }
             }
@@ -631,8 +674,13 @@ public class Sudoku
 
 
 
-    //shuffles the boxes vertically
-    private int ShuffleBoxesVert(int used, int[,] shuffles)
+    /// <summary>
+    /// Shuffles the columns of boxes.
+    /// </summary>
+    /// <param name="used"> how many of the shuffles were used </param>
+    /// <param name="shuffles"> list of possible shuffles </param>
+    /// <returns> the updated 'used' number </returns>
+    private int ShuffleBlockColumns(int used, int[,] shuffles)
     {
         int[,] temp = new int[,]{
             { 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -644,48 +692,47 @@ public class Sudoku
            };
 
 
-        //each block
-        for (int i = 0; i < 3; i++)
+        for (int blockCol = 0; blockCol < 3; blockCol++)
         {
-            //do nothing with block if it already is in the right place
-            if (shuffles[used, i] == i)
+            //do nothing with block column if it already is in the right place
+            if (shuffles[used, blockCol] == blockCol)
             {
                 continue;
             }
 
-            //save the block if it could be used later
-            if (i < 2)
+            //save the block column if it could be used later
+            if (blockCol < 2)
             {
-                //copy the block into temp
-                for (int j = 0; j < 3; j++)
+                //copy the block column into temp
+                for (int column = 0; column < 3; column++)
                 {
-                    for (int k = 0; k < 9; k++)
+                    for (int row = 0; row < 9; row++)
                     {
-                        temp[i * 3 + j, k] = board[k, i * 3 + j];
+                        temp[blockCol * 3 + column, row] = board[row, blockCol * 3 + column];
                     }
                 }
             }
 
-            //overwrite the block...
-            if (shuffles[used, i] > i)
+            //overwrite the block column...
+            if (shuffles[used, blockCol] > blockCol)
             {
-                //... with a later block
-                for (int j = 0; j < 3; j++)
+                //... with a later block column
+                for (int column = 0; column < 3; column++)
                 {
-                    for (int k = 0; k < 9; k++)
+                    for (int row = 0; row < 9; row++)
                     {
-                        board[k, i * 3 + j] = board[k, shuffles[used, i] * 3 + j];
+                        board[row, blockCol * 3 + column] = board[row, shuffles[used, blockCol] * 3 + column];
                     }
                 }
             }
             else
             {
-                //... with a saved block
-                for (int j = 0; j < 3; j++)
+                //... with a saved block column
+                for (int column = 0; column < 3; column++)
                 {
-                    for (int k = 0; k < 9; k++)
+                    for (int row = 0; row < 9; row++)
                     {
-                        board[k, i * 3 + j] = temp[shuffles[used, i] * 3 + j, k];
+                        board[row, blockCol * 3 + column] = temp[shuffles[used, blockCol] * 3 + column, row];
                     }
                 }
             }
@@ -702,11 +749,17 @@ public class Sudoku
 
 
 
-
+    /// <summary>
+    /// Returns an array with the numbers in the specified block row.
+    /// </summary>
+    /// <param name="blockCol"> column of blocks </param> 
+    /// <param name="blockRow"> row of blocks </param> 
+    /// <param name="row"> row within the block </param> 
+    /// <returns> the specified block row </returns>
     private int[] GetBlockRow(int blockCol, int blockRow, int row)
     {
 
-        return new int[] { board[blockRow * 3 + row, blockCol * 3 + 0], board[blockRow * 3 + row, blockCol * 3 + 1], board[blockRow * 3 + row, blockCol * 3 + 2] };
+        return new int[] { board[blockRow * 3 + row, blockCol * 3], board[blockRow * 3 + row, blockCol * 3 + 1], board[blockRow * 3 + row, blockCol * 3 + 2] };
     }
 
 
