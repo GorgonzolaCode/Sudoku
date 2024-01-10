@@ -95,7 +95,10 @@ public class Helper
     }
 
 
-
+    /// <summary>
+    /// Generates int arrays meant for shuffling.
+    /// </summary>
+    /// <returns> an array of int arrays, containing the numbers 0 to 2</returns>
     static public int[,] GetShuffleNumbers()
     {
         int[,] result = {
@@ -134,7 +137,10 @@ public class Helper
 
 
 
-    //returns a randomized sequence of valid numbers
+    /// <summary>
+    /// Returns a randomized sequence of the numbers 1 to 9.
+    /// </summary>
+    /// <returns> a randomized sequence of the numbers 1 to 9 </returns>
     static public int[] GetNumbers()
     {
         int[] result = new int[9];
@@ -146,7 +152,7 @@ public class Helper
         };
 
 
-        //sort the possible values by random
+        //reorder the numbers at random
         int curValIndex;
 
         for (int i = 0; i < 9; i++)
@@ -166,7 +172,10 @@ public class Helper
 
 
 
-    //get a random boolean value
+    /// <summary>
+    /// Get a random boolean value.
+    /// </summary>
+    /// <returns> <code>true</code> or<code>false</code></returns>
     static public bool GetRandomBool()
     {
         int i = random.Next(0, 2);
