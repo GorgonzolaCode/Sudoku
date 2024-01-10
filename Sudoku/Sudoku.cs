@@ -1,6 +1,5 @@
 ﻿using System.Collections;
-using System;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Diagnostics;
 
 
 
@@ -17,6 +16,15 @@ public class Sudoku
     /// </summary>
     public Sudoku()
     {
+        //code from a tutorial for setting up a log
+        StreamWriter logFile = File.CreateText("sudoku.log");
+        Trace.Listeners.Add(new TextWriterTraceListener(logFile));
+        Trace.AutoFlush = true;
+        Trace.WriteLine("Starting Sudoku Log");
+        Trace.WriteLine(String.Format("Started {0}", System.DateTime.Now.ToString()));
+
+
+
         //create a default board
         board = new int[,]{
             { 1, 2, 3, 4, 5, 6, 7, 8, 9},
@@ -29,6 +37,9 @@ public class Sudoku
             { 5, 6, 7, 8, 9, 1, 2, 3, 4},
             { 2, 3, 4, 5, 6, 7, 8, 9, 1}
            };
+
+        Trace.WriteLine("Sudoku was created: ");
+        Trace.WriteLine(ToString());
     }
 
 
@@ -146,46 +157,62 @@ public class Sudoku
     {
         Console.Clear();
 
-        for (int row = 0; row < board.GetLength(0); row++)
-        {
-                //horizontal divider
-                if (row % 3 == 0) Console.WriteLine("+_________+_________+_________+");
-
-                
-                //first vertical divider
-                Console.Write("| ");
-
-
-            
-            for (int col = 0; col < board.GetLength(1); col++)
-            {
-
-                //number
-                Console.Write(board[row, col]);
-
-
-                //vertical divider
-                if ((col + 1) % 3 == 0) 
-                {
-                    Console.Write(" | "); 
-                }
-                else
-                {
-                    Console.Write(", ");
-                }
-
-            }
-            Console.WriteLine();
-        }
-
-        //last horizontal divider
-        Console.WriteLine("+_________+_________+_________+");
+        Console.WriteLine(ToString());
 
         if (IsCorrect()) Console.WriteLine("\n The sudoku has no contradictions.");
         else Console.WriteLine("!!!The sudoku has a contradiction!!!");
     }
 
 
+    /// <summary>
+    /// Returns a string representation of the sudoku.
+    /// </summary>
+    /// <returns> a string representation with borders </returns>
+    override public string ToString()
+    {
+        string result = "";
+
+        for (int row = 0; row < board.GetLength(0); row++)
+        {
+            //horizontal divider
+            if (row % 3 == 0) result += "+_________+_________+_________+\n";
+
+
+            //first vertical divider
+            result += "| ";
+
+
+
+            for (int col = 0; col < board.GetLength(1); col++)
+            {
+
+                //number
+                result += board[row, col];
+
+
+                //vertical divider
+                if ((col + 1) % 3 == 0)
+                {
+                    result += " | ";
+                }
+                else
+                {
+                    result += ", ";
+                }
+
+            }
+            result += "\n";
+        }
+
+
+        //last horizontal divider
+        result += "+_________+_________+_________+\n";
+
+        return result;
+    }
+
+
+    
 
     /// <summary>
     /// Uses all viable methods to shuffle a sudoku.
@@ -219,6 +246,8 @@ public class Sudoku
             board[i % 9, i / 9] = numbers[temp-1];
         }
 
+        Trace.WriteLine(String.Format("Numbers were changed to {0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}", numbers[0], numbers[1], numbers[2], numbers[3], numbers[4], numbers[5], numbers[6], numbers[7], numbers[8]));
+        Trace.WriteLine(ToString());
     }
 
 
@@ -267,6 +296,7 @@ public class Sudoku
                     board[blockrow * 3 + row, column] = temp[numbers[(blockrow * 3) + (column % 3), row]];
                 }
             }
+
         }
 
         //set the flag so this method won't be executed again
