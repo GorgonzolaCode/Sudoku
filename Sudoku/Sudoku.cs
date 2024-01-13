@@ -11,6 +11,8 @@ public class Sudoku
     private int[,] board;
     private bool shuffled = false;
 
+
+
     /// <summary>
     /// Creates a default sudoku.
     /// </summary>
@@ -51,10 +53,11 @@ public class Sudoku
     {
         int temp;
         bool[] found;
+        bool result = true;
 
         
         
-        for (int row = 0; row < 9; row++)
+        for (int row = 0; result && row < 9; row++)
         {
             found = new bool[9] { false, false, false,
                                   false, false, false,
@@ -69,14 +72,22 @@ public class Sudoku
                 if (temp < 0) continue;
 
                 //check if number was already used
-                if (found[temp]) return false;
+                if (found[temp])
+                {
+                    result = false;
+
+                    Trace.WriteLine(String.Format("Contradiction in column {0}, row {1}: " +
+                        "Number twice in row.", col + 1, row + 1));
+
+                    continue;
+                }
                 found[temp] = true;
             }
         }
 
 
         
-        for (int col = 0; col < 9; col++)
+        for (int col = 0; result && col < 9; col++)
         {
             found = new bool[9] { false, false, false,
                                   false, false, false,
@@ -91,14 +102,22 @@ public class Sudoku
                 if (temp < 0) continue;
 
                 //check if number was already used
-                if (found[temp]) return false;
+                if (found[temp])
+                {
+                    result = false;
+
+                    Trace.WriteLine(String.Format("Contradiction in column {0}, row {1}: " +
+                        "Number twice in column.", col + 1, row + 1));
+
+                    continue;
+                }
                 found[temp] = true;
             }
         }
 
 
         
-        for (int block = 0; block < 9; block++)
+        for (int block = 0; result && block < 9; block++)
         {
             found = new bool[9] { false, false, false,
                                   false, false, false,
@@ -113,13 +132,22 @@ public class Sudoku
                 if (temp < 0) continue;
 
                 //check if number was already used
-                if (found[temp]) return false;
+                if (found[temp])
+                {
+                    result = false;
+
+                    Trace.WriteLine(String.Format("Contradiction in column {0}, row {1}: " +
+                        "Number twice in block.", (block%3)*3 + cell%3 + 1, (block/3)*3 + cell/3 + 1));
+
+                    continue;
+                }
                 found[temp] = true;
             }
         }
 
-
-        return true;
+        if (result) Trace.WriteLine("No contradictions found in the sudoku. ");
+        Trace.WriteLine(ToString());
+        return result;
     }
 
 
@@ -145,6 +173,9 @@ public class Sudoku
     /// <param name="value"> new value of a cell </param>
     public void Set(int col, int row, int value)
     {
+        Trace.WriteLine(String.Format("Column {0}, row {1} was changed from {2} to {3}. ", 
+            col + 1, row + 1, board[row, col], value));
+
         board[row, col] = value;
     }
 
@@ -161,6 +192,9 @@ public class Sudoku
 
         if (IsCorrect()) Console.WriteLine("\n The sudoku has no contradictions.");
         else Console.WriteLine("!!!The sudoku has a contradiction!!!");
+
+        Trace.WriteLine("The sudoku was drawn: ");
+        Trace.WriteLine(ToString());
     }
 
 
@@ -273,9 +307,9 @@ public class Sudoku
         //don't execute if the sudoku has already been shuffled
         if (shuffled) return;
 
-        int[,] numbers = Helper.GetShuffleNumbers();
+        int[,] shuffle = Helper.GetShuffleNumbers();
         int[] temp = new int[3];
-
+        int position = 0;
 
         
         for (int blockrow = 0; blockrow < 3; blockrow++)
@@ -289,14 +323,63 @@ public class Sudoku
                     temp[row] = board[blockrow * 3 + row, column];
                 }
 
+                
 
                 //overwrite column with new order
                 for (int row = 0; row < 3; row++)
                 {
-                    board[blockrow * 3 + row, column] = temp[numbers[(blockrow * 3) + (column % 3), row]];
+                    position = shuffle[(blockrow * 3) + (column % 3), row];
+                    board[blockrow * 3 + row, column] = temp[position];
                 }
-            }
 
+
+                //describe the change
+                Trace.Write(String.Format("Blockrow {0}, column {1} was ", blockrow + 1, column + 1));
+
+                switch (shuffle[(blockrow * 3) + (column % 3), 0])
+                {
+                    case 1:
+                        //if it is a cycle
+                        if (shuffle[(blockrow * 3) + (column % 3), 1] == 2)
+                        {
+                            Trace.WriteLine("shifted up once.");
+                        }
+                        //if it is a swap
+                        else
+                        {
+                            Trace.WriteLine("swapped in the first and second row.");
+                        }
+                        break;
+
+                    case 2:
+                        //if it is a cycle
+                        if (shuffle[(blockrow * 3) + (column % 3), 2] == 1)
+                        {
+                            Trace.WriteLine("shifted down once.");
+                        }
+                        //if it is a swap
+                        else
+                        {
+                            Trace.WriteLine("swapped in the first and third row.");
+                        }
+                        break;
+
+                    default:
+                        //if it is unchanged
+                        if (shuffle[(blockrow * 3) + (column % 3), 1] == 1)
+                        {
+                            Trace.WriteLine("left untouched.");
+                        }
+                        //if it is a swap
+                        else
+                        {
+                            Trace.WriteLine("swapped in the second and third row.");
+                        }
+                        break;
+                }
+
+                Trace.WriteLine(ToString());
+            }
         }
 
         //set the flag so this method won't be executed again
@@ -340,11 +423,8 @@ public class Sudoku
                 usedRows[arguments[3]] = true;
                 usedRows[arguments[4]] = true;
             }
-
         }
     }
-
-
 
 
 
@@ -371,11 +451,11 @@ public class Sudoku
             temp = board[row, columns[0]];
             board[row, columns[0]] = board[row, columns[1]];
             board[row, columns[1]] = temp;
-
         }
+
+        Trace.WriteLine(String.Format("Column {0} and {1} were swapped in rows {2}, {3}, and {4}.", columns[0] + 1, columns[1] + 1, rows[0] + 1, rows[1] + 1, rows[2] + 1 ));
+        Trace.WriteLine(ToString());
     }
-
-
 
 
 
@@ -473,10 +553,6 @@ public class Sudoku
     }
 
 
-    
-
-
-
 
 
     /// <summary>
@@ -559,8 +635,57 @@ public class Sudoku
 
             }
 
-            used++;
 
+
+            //log
+            Trace.Write(String.Format("In block row {0}, the ", blockRow + 1));
+
+            switch (shuffles[used, 0])
+            {
+                case 1:
+                    //if it is a cycle
+                    if (shuffles[used, 1] == 2)
+                    {
+                        Trace.WriteLine("rows were cycled up.");
+                    }
+                    //if it is a swap
+                    else
+                    {
+                        Trace.WriteLine("first and second row were swapped.");
+                    }
+                    break;
+
+                case 2:
+                    //if it is a cycle
+                    if (shuffles[used, 2] == 1)
+                    {
+                        Trace.WriteLine("rows were cycled down.");
+                    }
+                    //if it is a swap
+                    else
+                    {
+                        Trace.WriteLine("first and third row were swapped.");
+                    }
+                    break;
+
+                default:
+                    //if it is unchanged
+                    if (shuffles[used, 1] == 1)
+                    {
+                        Trace.WriteLine("rows were left untouched.");
+                    }
+                    //if it is a swap
+                    else
+                    {
+                        Trace.WriteLine("second and third row were swapped.");
+                    }
+                    break;
+            }
+
+            Trace.WriteLine(ToString());
+
+
+            used++;
         }
 
         return used;
@@ -621,6 +746,55 @@ public class Sudoku
                 }
 
             }
+
+            //log
+            Trace.Write(String.Format("In block column {0}, the ", blockCol + 1));
+
+            switch (shuffles[used, 0])
+            {
+                case 1:
+                    //if it is a cycle
+                    if (shuffles[used, 1] == 2)
+                    {
+                        Trace.WriteLine("columns were cycled left.");
+                    }
+                    //if it is a swap
+                    else
+                    {
+                        Trace.WriteLine("first and second column were swapped.");
+                    }
+                    break;
+
+                case 2:
+                    //if it is a cycle
+                    if (shuffles[used, 2] == 1)
+                    {
+                        Trace.WriteLine("columns were cycled right.");
+                    }
+                    //if it is a swap
+                    else
+                    {
+                        Trace.WriteLine("first and third column were swapped.");
+                    }
+                    break;
+
+                default:
+                    //if it is unchanged
+                    if (shuffles[used, 1] == 1)
+                    {
+                        Trace.WriteLine("columns were left untouched.");
+                    }
+                    //if it is a swap
+                    else
+                    {
+                        Trace.WriteLine("second and third column were swapped.");
+                    }
+                    break;
+            }
+
+            Trace.WriteLine(ToString());
+
+
             used++;
 
         }
@@ -697,6 +871,51 @@ public class Sudoku
 
         }
 
+        //log
+        switch (shuffles[used, 0])
+        {
+            case 1:
+                //if it is a cycle
+                if (shuffles[used, 1] == 2)
+                {
+                    Trace.WriteLine("The block rows were cycled up.");
+                }
+                //if it is a swap
+                else
+                {
+                    Trace.WriteLine("The first and second block row were swapped.");
+                }
+                break;
+
+            case 2:
+                //if it is a cycle
+                if (shuffles[used, 2] == 1)
+                {
+                    Trace.WriteLine("The block rows were cycled down.");
+                }
+                //if it is a swap
+                else
+                {
+                    Trace.WriteLine("The first and third block row were swapped.");
+                }
+                break;
+
+            default:
+                //if it is unchanged
+                if (shuffles[used, 1] == 1)
+                {
+                    Trace.WriteLine("The block rows were left untouched.");
+                }
+                //if it is a swap
+                else
+                {
+                    Trace.WriteLine("The second and third block row were swapped.");
+                }
+                break;
+        }
+
+        Trace.WriteLine(ToString());
+
 
         return ++used;
     }
@@ -770,6 +989,50 @@ public class Sudoku
 
         }
 
+        //log
+        switch (shuffles[used, 0])
+        {
+            case 1:
+                //if it is a cycle
+                if (shuffles[used, 1] == 2)
+                {
+                    Trace.WriteLine("The block columns were cycled left.");
+                }
+                //if it is a swap
+                else
+                {
+                    Trace.WriteLine("The first and second block column were swapped.");
+                }
+                break;
+
+            case 2:
+                //if it is a cycle
+                if (shuffles[used, 2] == 1)
+                {
+                    Trace.WriteLine("The block columns were cycled down.");
+                }
+                //if it is a swap
+                else
+                {
+                    Trace.WriteLine("The first and third block column were swapped.");
+                }
+                break;
+
+            default:
+                //if it is unchanged
+                if (shuffles[used, 1] == 1)
+                {
+                    Trace.WriteLine("The block columns were left untouched.");
+                }
+                //if it is a swap
+                else
+                {
+                    Trace.WriteLine("The second and third block column were swapped.");
+                }
+                break;
+        }
+
+        Trace.WriteLine(ToString());
 
         return ++used;
     }
