@@ -11,7 +11,7 @@ public class Sudoku
     private int[,] board;
     private bool shuffled = false;
 
-
+    static StreamWriter logFile = File.CreateText("sudoku.log");
 
     /// <summary>
     /// Creates a default sudoku.
@@ -19,7 +19,7 @@ public class Sudoku
     public Sudoku()
     {
         //code from a tutorial for setting up a log
-        StreamWriter logFile = File.CreateText("sudoku.log");
+        
         Trace.Listeners.Add(new TextWriterTraceListener(logFile));
         Trace.AutoFlush = true;
         Trace.WriteLine("Starting Sudoku Log");
