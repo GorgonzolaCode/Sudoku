@@ -63,5 +63,100 @@ namespace Sudoku_Test
         }
 
 
+
+        [TestMethod]
+        public void Test_Solver_Constructor()
+        {
+            Sudoku sudoku = new Sudoku();
+            Solver solver;
+            int[] options;
+
+            for (int j = 0; j < 100; j++)
+            {
+                sudoku.FullShuffle();
+                solver = new Solver(sudoku);
+
+                    for (int i = 0; i < 81; i++)
+                    {
+                        options = solver.GetOptions(i);
+
+                        //do fixed cells return only their value
+                        Assert.AreEqual(options.Length, 1);
+                        //does the solver represent the sudoku
+                        Assert.AreEqual(sudoku.Get(i % 9, i / 9), options[0]);
+                    }
+            }
+
+            
+        }
+
+
+
+        [TestMethod]
+        public void Test_Solver_Update()
+        {
+            Sudoku sudoku;
+            Solver solver;
+
+            for (int i = 0; i < 100; i++)
+            {
+                sudoku = new Sudoku();
+                sudoku.FullShuffle();
+                solver = new Solver(sudoku);
+
+                Assert.AreEqual(solver.GetOptions(0).Length, 1);
+                solver.SetCell(0, 0, 0);
+                Assert.AreEqual(solver.GetOptions(0).Length, 9);
+
+            }
+        }
+
+
+
+        [TestMethod]
+        public void Test_Solver_Collapse_Solved()
+        {
+            Sudoku sudoku = new Sudoku();
+            sudoku.FullShuffle();
+            Solver solver = new Solver(sudoku);
+
+            Assert.AreEqual(solver.CollapseFull(), false);
+        }
+
+
+
+        [TestMethod]
+        public void Test_Solver_Collapse_Solvable()
+        {
+            Sudoku sudoku = new Sudoku();
+            Solver solver;
+
+            for (int i = 0; i < 100; i++)
+            {
+                sudoku.FullShuffle();
+                solver = new Solver(sudoku);
+
+                //TODO
+            }
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }

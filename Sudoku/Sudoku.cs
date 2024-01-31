@@ -19,7 +19,6 @@ public class Sudoku
     public Sudoku()
     {
         //code from a tutorial for setting up a log
-        
         Trace.Listeners.Add(new TextWriterTraceListener(logFile));
         Trace.AutoFlush = true;
         Trace.WriteLine("Starting Sudoku Log");
@@ -162,6 +161,12 @@ public class Sudoku
         return board[row, col];
     }
 
+
+
+    public int Get(int position)
+    {
+        return Get(position%9, position/9);
+    }
 
 
 
