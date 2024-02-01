@@ -179,6 +179,24 @@ public class Helper
 
 
 
+    static public int getBlockFirst(int position)
+    {
+        return
+            position / 9 / 3 * 3 * 9 +
+            position % 9 / 3 * 3;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 }

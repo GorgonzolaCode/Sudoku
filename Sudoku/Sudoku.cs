@@ -44,6 +44,23 @@ public class Sudoku
     }
 
 
+
+    public Sudoku(Sudoku template) : this()
+    {
+        Trace.WriteLine("Using template to change sudoku: ");
+
+        for (int i = 0; i < 81; i++)
+        {
+            Set(i, template.Get(i));
+        }
+
+        Trace.WriteLine(ToString());
+        Trace.WriteLine("");
+    }
+
+
+
+
     /// <summary>
     /// Tells if a sudoku has no contradictions.
     /// </summary>
@@ -184,6 +201,12 @@ public class Sudoku
         board[row, col] = value;
     }
 
+
+
+    public void Set(int position, int value)
+    {
+        Set(position%9, position/9, value);
+    }
 
 
     /// <summary>
