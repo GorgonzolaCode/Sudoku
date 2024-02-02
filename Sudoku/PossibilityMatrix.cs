@@ -12,7 +12,7 @@ public class PossibilityMatrix
 
     private List<int>[] options = new List<int>[81];
 
-    static StreamWriter logFile = File.CreateText("solver.log");
+    static private StreamWriter logFile = File.CreateText("solver.log");
 
 
     /// <summary>
@@ -35,13 +35,27 @@ public class PossibilityMatrix
 
         Trace.WriteLine("");
 
+        GetUnsolved();
         UpdateFullOptions();
     }
 
 
 
+    public List<int> GetUnsolved()
+    {
+        List<int> unsolved = new List<int>();
+
+        for (int i = 0; i < 81; i++)
+        {
+            if (Get(i) == 0) unsolved.Add(i);
+        }
+
+        return unsolved;
+    }
+
+
     /// <summary>
-    /// Updates the options array for all solved cells.
+    /// Updates the options for all cells.
     /// </summary>
     private void UpdateFullOptions()
     {
@@ -52,7 +66,7 @@ public class PossibilityMatrix
         }
     }
 
-
+    
 
     /// <summary>
     /// Changes options for a single cell, to either the cell content, or all numbers.
@@ -61,7 +75,7 @@ public class PossibilityMatrix
     private void UpdateCellOptions(int position)
     {
         Trace.WriteLine($"Updating cell at position {position}: ");
-        int value = sudoku.Get(position % 9, position / 9);
+        int value = sudoku.Get(position);
 
         //set the options to the value if definite
         if (value != 0)
@@ -78,6 +92,21 @@ public class PossibilityMatrix
         }
 
         Trace.WriteLine("");
+    }
+
+
+
+
+    public int Get(int position)
+    {
+        return sudoku.Get(position);
+    }
+
+
+
+    public int Get(int row, int column)
+    {
+        return Get(row * 9 + column);
     }
 
 
@@ -141,12 +170,10 @@ public class PossibilityMatrix
     /// </summary>
     public bool IsSolved()
     {
-        foreach (List<int> list in options)
-        {
-            if (list.Count != 1) return false;
-        }
-        
-        return true;
+        //UnsolvedList();
+        if (GetUnsolved().Count == 0) return true;
+
+        return false;
     }
 
 
@@ -156,7 +183,10 @@ public class PossibilityMatrix
     /// </summary>
     public bool IsCorrect()
     {
-        for (int i = 0; i < 81; i++)
+        List<int> unsolved = GetUnsolved();
+
+        //false, if a cell has no options left
+        foreach (int i in unsolved)
         {
             if (options[i].Count == 0) return false;
         }
@@ -169,14 +199,15 @@ public class PossibilityMatrix
     /// <summary>
     /// Fixes the value of cells with only one possible value.
     /// </summary>
-    /// <returns> Returns, whether a cell was collapsed. </returns>
+    /// <returns> Returns, whether a cell was solved. </returns>
     public bool FixAll()
     {
+        List<int> unsolved = GetUnsolved();
         bool changed = false;
 
-        for (int i = 0; i < 81; i++)
+        foreach (int i in unsolved)
         {
-            if (sudoku.Get(i) == 0) changed = (FixCell(i) || changed);
+            changed = (FixCell(i) || changed);
         }
 
         return changed;
@@ -188,14 +219,14 @@ public class PossibilityMatrix
     /// Fixes the cell value in the sudoku if there is only one option.
     /// </summary>
     /// <param name="position"></param>
-    /// <returns> Returns, whether the cell was collapsed. </returns>
-    private bool FixCell(int position)
+    /// <returns> Returns, whether the cell was solved. </returns>
+    public bool FixCell(int position)
     {
         List<int> options = GetOptions(position);
 
         if (options.Count == 1)
         {
-            sudoku.Set(position, options[0]);
+            sudoku.Set(position, options.First());
             return true;
         }
 

@@ -199,6 +199,39 @@ namespace Sudoku_Test
 
 
 
+        [TestMethod]
+        public void Test_Simple_Solver()
+        {
+            //generate solver with unsolved sudoku
+            Sudoku sudoku = new Sudoku();
+            sudoku.FullShuffle();
+            sudoku = GenerateExampleSudoku(sudoku, "easy");
+            Solver solver = new SimpleSolver(sudoku);
+
+            if (solver.Solve())
+            {
+                Assert.IsTrue(solver.IsSolved());
+            }
+            Assert.IsTrue(solver.isCorrect());
+
+            
+        }
+
+
+        [TestMethod]
+        public void Test_Simple_Solver_Unordered()
+        {
+            Sudoku sudoku = new Sudoku();
+            sudoku = GenerateExampleSudoku(sudoku, "easy");
+            sudoku.FullShuffle();
+            Solver solver = new SimpleSolver(sudoku);
+
+            if (solver.Solve())
+            {
+                Assert.IsTrue(solver.IsSolved());
+            }
+            Assert.IsTrue(solver.isCorrect());
+        }
 
 
 
@@ -208,6 +241,37 @@ namespace Sudoku_Test
 
 
 
+
+
+
+
+        private Sudoku GenerateExampleSudoku(Sudoku sudoku, string difficulty)
+        {
+            switch (difficulty)
+            {
+                default: return GenerateExampleSudoku_Easy(sudoku);
+                    break;
+            }
+        }
+
+
+        private Sudoku GenerateExampleSudoku_Easy(Sudoku sudoku)
+        {
+            //delete row
+            for (int i = 0; i < 9; i++)
+            {
+                sudoku.Set(i, 5, 0);
+            }
+            //delete column
+            for (int i = 0; i < 9; i++)
+            {
+                sudoku.Set(5, i, 0);
+            }
+            
+
+
+            return sudoku;
+        }
 
     }
 }

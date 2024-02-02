@@ -11,7 +11,7 @@ public class Sudoku
     private int[,] board;
     private bool shuffled = false;
 
-    static StreamWriter logFile = File.CreateText("sudoku.log");
+    static private StreamWriter logFile = File.CreateText("sudoku.log");
 
     /// <summary>
     /// Creates a default sudoku.
@@ -212,9 +212,9 @@ public class Sudoku
     /// <summary>
     /// Clears console and draws the board. Tells if the sudoku is still coherent.
     /// </summary>
-    public void Draw()
+    public void Draw(bool erasing)
     {
-        Console.Clear();
+        if (erasing) Console.Clear();
 
         Console.WriteLine(ToString());
 
@@ -230,7 +230,7 @@ public class Sudoku
     /// Returns a string representation of the sudoku.
     /// </summary>
     /// <returns> a string representation with borders </returns>
-    override public string ToString()
+    public override string ToString()
     {
         string result = "";
 
