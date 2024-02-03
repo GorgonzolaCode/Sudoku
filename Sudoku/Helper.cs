@@ -3,11 +3,6 @@ using System.Collections;
 
 
 
-
-
-
-
-
 public class Helper
 {
 
@@ -181,6 +176,24 @@ public class Helper
         int i = random.Next(0, 2);
         return (i == 0);
     }
+
+
+
+    static public int getBlockFirst(int position)
+    {
+        return
+            position / 9 / 3 * 3 * 9 +
+            position % 9 / 3 * 3;
+    }
+
+
+
+
+
+
+
+
+
 
 
 

@@ -11,7 +11,7 @@ public class Sudoku
     private int[,] board;
     private bool shuffled = false;
 
-    static StreamWriter logFile = File.CreateText("sudoku.log");
+    static private StreamWriter logFile = File.CreateText("sudoku.log");
 
     /// <summary>
     /// Creates a default sudoku.
@@ -19,7 +19,6 @@ public class Sudoku
     public Sudoku()
     {
         //code from a tutorial for setting up a log
-        
         Trace.Listeners.Add(new TextWriterTraceListener(logFile));
         Trace.AutoFlush = true;
         Trace.WriteLine("Starting Sudoku Log");
@@ -43,6 +42,23 @@ public class Sudoku
         Trace.WriteLine("Sudoku was created: ");
         Trace.WriteLine(ToString());
     }
+
+
+
+    public Sudoku(Sudoku template) : this()
+    {
+        Trace.WriteLine("Using template to change sudoku: ");
+
+        for (int i = 0; i < 81; i++)
+        {
+            Set(i, template.Get(i));
+        }
+
+        Trace.WriteLine(ToString());
+        Trace.WriteLine("");
+    }
+
+
 
 
     /// <summary>
@@ -164,6 +180,12 @@ public class Sudoku
 
 
 
+    public int Get(int position)
+    {
+        return Get(position%9, position/9);
+    }
+
+
 
     /// <summary>
     /// Sets the value of a coll. Starts counting at 0.
@@ -181,12 +203,18 @@ public class Sudoku
 
 
 
+    public void Set(int position, int value)
+    {
+        Set(position%9, position/9, value);
+    }
+
+
     /// <summary>
     /// Clears console and draws the board. Tells if the sudoku is still coherent.
     /// </summary>
-    public void Draw()
+    public void Draw(bool erasing)
     {
-        Console.Clear();
+        if (erasing) Console.Clear();
 
         Console.WriteLine(ToString());
 
@@ -202,7 +230,7 @@ public class Sudoku
     /// Returns a string representation of the sudoku.
     /// </summary>
     /// <returns> a string representation with borders </returns>
-    override public string ToString()
+    public override string ToString()
     {
         string result = "";
 

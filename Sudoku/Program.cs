@@ -1,6 +1,6 @@
 ﻿
 
-
+bool erasing = false;
 
 //create a new and shuffled sudoku
 Sudoku sudoku = new Sudoku();
@@ -11,10 +11,17 @@ sudoku.FullShuffle();
 
 while (true)
 {
-    sudoku.Draw();
+    sudoku.Draw(erasing);
+
+    sudoku = GenerateExampleSudoku_Easy(sudoku);
+    Solver solver = new SimpleSolver(sudoku);
+    sudoku.Draw(erasing);
+
+    solver.Solve();
+    sudoku.Draw(erasing);
 
 
-    
+
     //get a command
     string command = GetCommand();
 
@@ -67,4 +74,35 @@ int[] RetrieveThreeNumbers(string command)
     if (result[2] == -1) { return null; }
 
     return result;
+}
+
+
+
+
+
+
+
+
+
+
+
+Sudoku GenerateExampleSudoku_Easy(Sudoku sudoku)
+{
+    //delete row
+    for (int i = 0; i < 9; i++)
+    {
+        sudoku.Set(i, 5, 0);
+    }
+    //delete column
+    for (int i = 0; i < 9; i++)
+    {
+        sudoku.Set(5, i, 0);
+    }
+    //delete block
+    for (int i = 0; i < 9; i++)
+    {
+        sudoku.Set(i%3 + i/3*9, 0);
+    }
+
+    return sudoku;
 }
