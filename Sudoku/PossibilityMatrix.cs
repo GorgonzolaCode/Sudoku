@@ -12,8 +12,6 @@ public class PossibilityMatrix
 
     private List<int>[] options = new List<int>[81];
 
-    static private StreamWriter logFile = File.CreateText("solver.log");
-
 
     /// <summary>
     /// Generates a solver for a specific sudoku.
@@ -21,22 +19,17 @@ public class PossibilityMatrix
     /// <param name="sudoku"></param>
     public PossibilityMatrix(Sudoku sudokuP)
     {
-        //Trace setup, as in tutorial
-        Trace.Listeners.Add(new TextWriterTraceListener(logFile));
-        Trace.AutoFlush = true;
-        Trace.WriteLine("Starting Solver Log");
-        Trace.WriteLine(String.Format("Started {0}", System.DateTime.Now.ToString()));
-
-        Trace.WriteLine("");
-
-        Trace.WriteLine("Given sudoku is:");
-        Trace.WriteLine(sudokuP.ToString());
         sudoku = sudokuP;
-
-        Trace.WriteLine("");
 
         GetUnsolved();
         UpdateFullOptions();
+    }
+
+
+
+    public Sudoku GetSudoku()
+    {
+        return sudoku;
     }
 
 
@@ -74,7 +67,6 @@ public class PossibilityMatrix
     /// <param name="position"></param>
     private void UpdateCellOptions(int position)
     {
-        Trace.WriteLine($"Updating cell at position {position}: ");
         int value = sudoku.Get(position);
 
         //set the options to the value if definite
@@ -82,16 +74,13 @@ public class PossibilityMatrix
         {
             options[position] = 
                 new List<int>() { value };
-            Trace.WriteLine($"The only option is {value}");
         }
         else
         {
             options[position] = 
                 new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-            Trace.WriteLine("All values are possible.");
         }
 
-        Trace.WriteLine("");
     }
 
 

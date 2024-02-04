@@ -19,6 +19,11 @@ public abstract class Solver
     }
 
 
+    public Solver(Solver solver)
+    {
+        matrix = new PossibilityMatrix(solver.GetSudoku());
+    }
+
 
     /// <summary>
     /// Tries to solve the sudoku.
@@ -26,6 +31,7 @@ public abstract class Solver
     /// <returns> Returns, whether the sudoku was solved. </returns>
     public abstract bool Solve();
 
+    public abstract bool CellSolve(int position);
 
 
     public int Get(int position)
@@ -39,12 +45,31 @@ public abstract class Solver
     }
 
 
-    public bool isCorrect()
+    public bool IsCorrect()
     {
         return matrix.IsCorrect();
     }
 
 
+    public List<int> GetSolved() 
+    {
+        List<int>  unsolved = matrix.GetUnsolved();
+        return Helper.InvertPositions(unsolved);
+    }
+
+
+
+    public void Remove(int position)
+    {
+        matrix.SetCell(position, 0);
+    }
+
+
+
+    public Sudoku GetSudoku()
+    {
+        return matrix.GetSudoku();
+    }
 
 
 

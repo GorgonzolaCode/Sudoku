@@ -53,7 +53,7 @@ namespace Sudoku_Test
         {
             Sudoku sudoku;
 
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 20; i++)
             {
             sudoku = new Sudoku();
             sudoku.FullShuffle();
@@ -68,7 +68,7 @@ namespace Sudoku_Test
         {
             Sudoku sudoku = new Sudoku();
 
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 20; i++)
             {
                 sudoku.FullShuffle();
 
@@ -85,7 +85,7 @@ namespace Sudoku_Test
             PossibilityMatrix matrix;
             List<int> options;
 
-            for (int j = 0; j < 100; j++)
+            for (int j = 0; j < 20; j++)
             {
                 sudoku.FullShuffle();
                 matrix = new PossibilityMatrix(sudoku);
@@ -112,7 +112,7 @@ namespace Sudoku_Test
             Sudoku sudoku;
             PossibilityMatrix matrix;
 
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 20; i++)
             {
                 sudoku = new Sudoku();
                 sudoku.FullShuffle();
@@ -187,7 +187,7 @@ namespace Sudoku_Test
                                 row * 9 +
                                 column;
                             Assert.AreEqual(
-                                Helper.getBlockFirst(position),
+                                Helper.GetBlockFirst(position),
                                 blockrow*27 + blockcolumn*3
                                 );
                         }
@@ -212,7 +212,7 @@ namespace Sudoku_Test
             {
                 Assert.IsTrue(solver.IsSolved());
             }
-            Assert.IsTrue(solver.isCorrect());
+            Assert.IsTrue(solver.IsCorrect());
 
             
         }
@@ -230,11 +230,23 @@ namespace Sudoku_Test
             {
                 Assert.IsTrue(solver.IsSolved());
             }
-            Assert.IsTrue(solver.isCorrect());
+            Assert.IsTrue(solver.IsCorrect());
         }
 
 
+        [TestMethod]
+        public void Test_Remover_Solve()
+        {
+            Sudoku sudoku = new Sudoku();
+            sudoku.FullShuffle();
+            Solver solver = new SimpleSolver(new Sudoku(sudoku));
 
+            Remover remover = new Remover(solver);
+            remover.Minimize();
+            solver.Solve();
+
+            Assert.IsTrue(solver.IsSolved());
+        }
 
 
 

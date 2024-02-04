@@ -13,8 +13,10 @@ while (true)
 {
     sudoku.Draw(erasing);
 
-    sudoku = GenerateExampleSudoku_Easy(sudoku);
     Solver solver = new SimpleSolver(sudoku);
+    Remover remover = new Remover(solver);
+
+    remover.Minimize();
     sudoku.Draw(erasing);
 
     solver.Solve();

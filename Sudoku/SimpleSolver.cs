@@ -11,6 +11,8 @@ public class SimpleSolver : Solver
 
     public SimpleSolver(Sudoku sudoku) : base(sudoku) { }
 
+    public SimpleSolver(Solver solver) : base(solver) { }
+
 
 
     public bool Solve(List<int> cellsToCheck)
@@ -42,7 +44,7 @@ public class SimpleSolver : Solver
     /// </summary>
     /// <param name="position"> position of the cell </param>
     /// <returns> Returns, whether the cell was solved. </returns>
-    private bool CellSolve(int position)
+    public override bool CellSolve(int position)
     {
         List<int> options = matrix.GetOptions(position);
 
@@ -56,7 +58,7 @@ public class SimpleSolver : Solver
 
             //block
             options.Remove(matrix.Get(
-                Helper.getBlockFirst(position) + i%3 + i/3*9
+                Helper.GetBlockFirst(position) + i%3 + i/3*9
                 ));
 
             //test if finished
