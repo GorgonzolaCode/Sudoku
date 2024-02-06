@@ -3,7 +3,7 @@
 bool erasing = false;
 
 //create a new and shuffled sudoku
-Sudoku sudoku = new Sudoku();
+Board sudoku = new Board();
 sudoku.FullShuffle();
 
 
@@ -19,7 +19,6 @@ while (true)
 
     solver.Solve();
     sudoku.Draw(erasing);
-
 
 
     //get a command
@@ -86,7 +85,7 @@ int[] RetrieveThreeNumbers(string command)
 
 
 
-Sudoku GenerateExampleSudoku_Easy(Sudoku sudoku)
+Board GenerateExampleSudoku_Easy(Board sudoku)
 {
     //delete row
     for (int i = 0; i < 9; i++)

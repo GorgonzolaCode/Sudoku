@@ -6,7 +6,7 @@ namespace Sudoku_Test
         [TestMethod]
         public void Test_Default_Sudoku()
         {
-            Sudoku sudoku = new Sudoku();
+            Board sudoku = new Board();
 
             int[,] board = new int[,]{
             { 1, 2, 3, 4, 5, 6, 7, 8, 9},
@@ -35,9 +35,9 @@ namespace Sudoku_Test
         [TestMethod]
         public void Test_Template_Constructor()
         {
-            Sudoku sudoku_original = new Sudoku();
+            Board sudoku_original = new Board();
             sudoku_original.FullShuffle();
-            Sudoku sudoku_copy = new Sudoku(sudoku_original);
+            Board sudoku_copy = new Board(sudoku_original);
 
             for (int position = 0; position < 81; position++)
             {
@@ -51,11 +51,11 @@ namespace Sudoku_Test
         [TestMethod]
         public void Test_First_Shuffle_Validity()
         {
-            Sudoku sudoku;
+            Board sudoku;
 
             for (int i = 0; i < 100; i++)
             {
-            sudoku = new Sudoku();
+            sudoku = new Board();
             sudoku.FullShuffle();
 
             Assert.IsTrue(sudoku.IsCorrect());
@@ -66,7 +66,7 @@ namespace Sudoku_Test
         [TestMethod]
         public void Test_Continuous_Shuffle_Validity()
         {
-            Sudoku sudoku = new Sudoku();
+            Board sudoku = new Board();
 
             for (int i = 0; i < 100; i++)
             {
@@ -81,7 +81,7 @@ namespace Sudoku_Test
         [TestMethod]
         public void Test_Matrix_Constructor()
         {
-            Sudoku sudoku = new Sudoku();
+            Board sudoku = new Board();
             PossibilityMatrix matrix;
             List<int> options;
 
@@ -109,17 +109,17 @@ namespace Sudoku_Test
         [TestMethod]
         public void Test_Matrix_Update()
         {
-            Sudoku sudoku;
+            Board sudoku;
             PossibilityMatrix matrix;
 
             for (int i = 0; i < 100; i++)
             {
-                sudoku = new Sudoku();
+                sudoku = new Board();
                 sudoku.FullShuffle();
                 matrix = new PossibilityMatrix(sudoku);
 
                 Assert.AreEqual(matrix.GetOptions(0).Count, 1);
-                matrix.SetCell(0, 0, 0);
+                matrix.Set(0, 0, 0);
                 Assert.AreEqual(matrix.GetOptions(0).Count, 9);
 
             }
@@ -130,7 +130,7 @@ namespace Sudoku_Test
         [TestMethod]
         public void Test_Matrix_Fix_Solved()
         {
-            Sudoku sudoku = new Sudoku();
+            Board sudoku = new Board();
             sudoku.FullShuffle();
             PossibilityMatrix matrix = new PossibilityMatrix(sudoku);
 
@@ -143,7 +143,7 @@ namespace Sudoku_Test
         [TestMethod]
         public void Test_Matrix_Fix_Missing()
         {
-            Sudoku sudoku = new Sudoku();
+            Board sudoku = new Board();
             sudoku.FullShuffle();
             PossibilityMatrix matrix = new PossibilityMatrix(sudoku);
 
@@ -152,7 +152,7 @@ namespace Sudoku_Test
             for (int i = 0; i < 9; i++)
             {
                 values.Add(matrix.GetOptions(i)[0]);
-                matrix.SetCell(i, 0);
+                matrix.Set(i, 0);
                 matrix.SetOptions(i, new List<int> { values[i] });
 
                 Assert.AreEqual(sudoku.Get(i), 0);
@@ -203,7 +203,7 @@ namespace Sudoku_Test
         public void Test_Simple_Solver()
         {
             //generate solver with unsolved sudoku
-            Sudoku sudoku = new Sudoku();
+            Board sudoku = new Board();
             sudoku.FullShuffle();
             sudoku = GenerateExampleSudoku(sudoku, "easy");
             Solver solver = new SimpleSolver(sudoku);
@@ -221,7 +221,7 @@ namespace Sudoku_Test
         [TestMethod]
         public void Test_Simple_Solver_Unordered()
         {
-            Sudoku sudoku = new Sudoku();
+            Board sudoku = new Board();
             sudoku = GenerateExampleSudoku(sudoku, "easy");
             sudoku.FullShuffle();
             Solver solver = new SimpleSolver(sudoku);
@@ -245,7 +245,7 @@ namespace Sudoku_Test
 
 
 
-        private Sudoku GenerateExampleSudoku(Sudoku sudoku, string difficulty)
+        private Board GenerateExampleSudoku(Board sudoku, string difficulty)
         {
             switch (difficulty)
             {
@@ -255,7 +255,7 @@ namespace Sudoku_Test
         }
 
 
-        private Sudoku GenerateExampleSudoku_Easy(Sudoku sudoku)
+        private Board GenerateExampleSudoku_Easy(Board sudoku)
         {
             //delete row
             for (int i = 0; i < 9; i++)

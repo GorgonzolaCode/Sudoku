@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 public class PossibilityMatrix
 {
-    private Sudoku sudoku;
+    private Board board;
 
     private List<int>[] options = new List<int>[81];
 
@@ -19,7 +19,7 @@ public class PossibilityMatrix
     /// Generates a solver for a specific sudoku.
     /// </summary>
     /// <param name="sudoku"></param>
-    public PossibilityMatrix(Sudoku sudokuP)
+    public PossibilityMatrix(Board sudokuP)
     {
         //Trace setup, as in tutorial
         Trace.Listeners.Add(new TextWriterTraceListener(logFile));
@@ -31,7 +31,7 @@ public class PossibilityMatrix
 
         Trace.WriteLine("Given sudoku is:");
         Trace.WriteLine(sudokuP.ToString());
-        sudoku = sudokuP;
+        board = sudokuP;
 
         Trace.WriteLine("");
 
@@ -39,6 +39,17 @@ public class PossibilityMatrix
         UpdateFullOptions();
     }
 
+
+    public override string ToString()
+    {
+        return board.ToString();
+    }
+
+
+    public void Draw(bool erasing)
+    {
+        board.Draw(erasing);
+    }
 
 
     public List<int> GetUnsolved()
@@ -75,7 +86,7 @@ public class PossibilityMatrix
     private void UpdateCellOptions(int position)
     {
         Trace.WriteLine($"Updating cell at position {position}: ");
-        int value = sudoku.Get(position);
+        int value = board.Get(position);
 
         //set the options to the value if definite
         if (value != 0)
@@ -99,7 +110,7 @@ public class PossibilityMatrix
 
     public int Get(int position)
     {
-        return sudoku.Get(position);
+        return board.Get(position);
     }
 
 
@@ -150,17 +161,17 @@ public class PossibilityMatrix
     /// </summary>
     /// <param name="position"></param>
     /// <param name="value"></param>
-    public void SetCell(int position, int value)
+    public void Set(int position, int value)
     {
-        sudoku.Set(position % 9, position / 9, value);
+        board.Set(position, value);
         UpdateCellOptions(position);
     }
 
 
 
-    public void SetCell(int column, int row, int value)
+    public void Set(int column, int row, int value)
     {
-        SetCell(row * 9 + column, value);
+        Set(row * 9 + column, value);
     }
 
 
@@ -191,7 +202,7 @@ public class PossibilityMatrix
             if (options[i].Count == 0) return false;
         }
 
-        return sudoku.IsCorrect();
+        return board.IsCorrect();
     }
 
 
@@ -226,7 +237,7 @@ public class PossibilityMatrix
 
         if (options.Count == 1)
         {
-            sudoku.Set(position, options.First());
+            board.Set(position, options.First());
             return true;
         }
 
@@ -235,7 +246,7 @@ public class PossibilityMatrix
 
 
 
-    private bool FixCell(int column, int row)
+    public bool FixCell(int column, int row)
     {
         return FixCell(row*9 + column);
     }
