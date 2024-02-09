@@ -5,7 +5,7 @@ using System.Diagnostics;
 
 
 
-public class Sudoku
+public class Board
 {
 
     private int[,] board;
@@ -16,7 +16,7 @@ public class Sudoku
     /// <summary>
     /// Creates a default sudoku.
     /// </summary>
-    public Sudoku()
+    public Board()
     {
         //code from a tutorial for setting up a log
         Trace.Listeners.Add(new TextWriterTraceListener(logFile));
@@ -45,7 +45,7 @@ public class Sudoku
 
 
 
-    public Sudoku(Sudoku template) : this()
+    public Board(Board template) : this()
     {
         Trace.WriteLine("Using template to change sudoku: ");
 

@@ -13,10 +13,17 @@ public abstract class Solver
     protected PossibilityMatrix matrix;
 
 
-    public Solver(Sudoku sudoku)
+    public Solver(Board sudoku)
     {
         matrix = new PossibilityMatrix(sudoku);
     }
+
+    public Solver(PossibilityMatrix matrix)
+    {
+        this.matrix = matrix;
+    }
+
+
 
 
     public Solver(Solver solver)
@@ -41,6 +48,12 @@ public abstract class Solver
         return matrix.Get(position);
     }
 
+    public void Set(int position, int value)
+    {
+        matrix.Set(position, value);
+    }
+
+
     public bool IsSolved()
     {
         return matrix.IsSolved();
@@ -51,6 +64,7 @@ public abstract class Solver
     {
         return matrix.IsCorrect();
     }
+
 
 
     public List<int> GetSolved() 
@@ -72,6 +86,42 @@ public abstract class Solver
     {
         return matrix.GetSudoku();
     }
+
+    public List<int> GetUnsolved()
+    {
+        return matrix.GetUnsolved();
+    }
+
+    public List<int> GetOptions(int position)
+    {
+        return matrix.GetOptions(position);
+    }
+
+    public bool SetOptions(int position, List<int> options)
+    {
+        return matrix.SetOptions(position, options);
+    }
+
+    public void FixCell(int position)
+    {
+        matrix.FixCell(position);
+    }
+
+    public void Draw(bool erasing)
+    {
+        matrix.Draw(erasing);
+    }
+
+    public override string ToString()
+    {
+        return matrix.ToString();
+    }
+
+
+
+
+
+
 
 
 

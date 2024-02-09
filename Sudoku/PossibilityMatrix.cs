@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 public class PossibilityMatrix
 {
-    private Sudoku sudoku;
+    private Board board;
 
     private List<int>[] options = new List<int>[81];
 
@@ -17,14 +17,26 @@ public class PossibilityMatrix
     /// Generates a solver for a specific sudoku.
     /// </summary>
     /// <param name="sudoku"></param>
-    public PossibilityMatrix(Sudoku sudokuP)
+    public PossibilityMatrix(Board sudokuP)
     {
-        sudoku = sudokuP;
+
+        board = sudokuP;
 
         GetUnsolved();
         UpdateFullOptions();
     }
 
+
+    public override string ToString()
+    {
+        return board.ToString();
+    }
+
+
+    public void Draw(bool erasing)
+    {
+        board.Draw(erasing);
+    }
 
 
     public Sudoku GetSudoku()
@@ -67,7 +79,7 @@ public class PossibilityMatrix
     /// <param name="position"></param>
     private void UpdateCellOptions(int position)
     {
-        int value = sudoku.Get(position);
+        int value = board.Get(position);
 
         //set the options to the value if definite
         if (value != 0)
@@ -88,7 +100,7 @@ public class PossibilityMatrix
 
     public int Get(int position)
     {
-        return sudoku.Get(position);
+        return board.Get(position);
     }
 
 
@@ -139,17 +151,17 @@ public class PossibilityMatrix
     /// </summary>
     /// <param name="position"></param>
     /// <param name="value"></param>
-    public void SetCell(int position, int value)
+    public void Set(int position, int value)
     {
-        sudoku.Set(position % 9, position / 9, value);
+        board.Set(position, value);
         UpdateCellOptions(position);
     }
 
 
 
-    public void SetCell(int column, int row, int value)
+    public void Set(int column, int row, int value)
     {
-        SetCell(row * 9 + column, value);
+        Set(row * 9 + column, value);
     }
 
 
@@ -180,7 +192,7 @@ public class PossibilityMatrix
             if (options[i].Count == 0) return false;
         }
 
-        return sudoku.IsCorrect();
+        return board.IsCorrect();
     }
 
 
@@ -215,7 +227,7 @@ public class PossibilityMatrix
 
         if (options.Count == 1)
         {
-            sudoku.Set(position, options.First());
+            board.Set(position, options.First());
             return true;
         }
 
@@ -224,150 +236,10 @@ public class PossibilityMatrix
 
 
 
-    private bool FixCell(int column, int row)
+    public bool FixCell(int column, int row)
     {
         return FixCell(row*9 + column);
     }
-
-    /*
-
-    /// <summary>
-    /// Tries to solve the sudoku by using the standard rules.
-    /// </summary>
-    public void RuleSolveFull()
-    {
-        for (int i = 0; i < 81; i++)
-        {
-            CheckAddUnique(i);
-        }
-
-        while (cellsToCheck.Count > 0)
-        {
-            RuleSolveCell(cellsToCheck.First());
-        }
-    }
-
-
-
-    /// <summary>
-    /// Tries to solve a cell via default rules.
-    /// </summary>
-    /// <param name="position"></param>
-    /// <returns> Returns, whether the cell was solved. </returns>
-    private bool RuleSolveCell(int position)
-    {
-        if (sudoku.Get(position) != 0) return false;
-
-        //reduce options via criteria
-        if (RowSolve(position) && FixCell(position))
-            {
-                return true;
-            }
-        if (ColSolve(position) && FixCell(position))
-            {
-                return true;
-            }
-        if (BlockSolve(position) && FixCell(position))
-            {
-                return true;
-            }
-
-        return false;
-    }
-
-
-
-    private bool RuleSolveCell(int column, int row)
-    {
-        return RuleSolveCell(row*9 + column);
-    }
-
-
-
-    private bool RowSolve(int position)
-    {
-        List<int> optionsLeft = GetOptions(position);
-
-        for (int i = 0; i < 9; i++)
-        {
-            optionsLeft.Remove(sudoku.Get(i, position/9));
-        }
-
-        return SetOptions(position, optionsLeft);
-    }
-
-
-
-    private bool ColSolve(int position)
-    {
-        List<int> optionsLeft = GetOptions(position);
-
-        for (int i = 0; i < 9; i++)
-        {
-            optionsLeft.Remove(sudoku.Get(position%9, i));
-        }
-
-        return SetOptions(position, optionsLeft);
-    }
-
-
-
-    private bool BlockSolve(int position)
-    {
-        List<int> optionsLeft = GetOptions(position);
-
-        for (int i = 0; i < 9; i++)
-        {
-            optionsLeft.Remove(sudoku.Get(
-                //start-of-block column + column shift
-                position%9/3*3 + i%3, 
-                //start-of-block row    + row shift
-                position/9/3*3 + i/3
-                ));
-        }
-
-        return SetOptions(position, optionsLeft);
-    }
-
-    
-
-    /// <summary>
-    /// Adds all relevant cells to a to-do-list after changing one.
-    /// </summary>
-    /// <param name="position"></param>
-    private void Consequence(int position)
-    {
-        //row
-        for (int i = 0; i < 9; i++)
-        {
-            CheckAddUnique(position/9*9 + i);
-        }
-        //column
-        for (int i = 0; i < 9; i++)
-        {
-            CheckAddUnique(position%9 + i*9);
-        }
-        //block
-        for (int i = 0; i < 9; i++)
-        {
-            CheckAddUnique(
-                Helper.getBlockFirst(position) +
-                i % 3 +
-                i / 3 * 9
-                );
-        }
-    }
-
-
-
-    private void CheckAddUnique(int position)
-    {
-        if (cellsToCheck.Contains(position)) return;
-        cellsToCheck.Add(position);
-    }
-
-
-    */
 
 
 }

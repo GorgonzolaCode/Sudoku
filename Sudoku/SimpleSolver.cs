@@ -9,7 +9,7 @@ public class SimpleSolver : Solver
 {
 
 
-    public SimpleSolver(Sudoku sudoku) : base(sudoku) { }
+    public SimpleSolver(Board board) : base(board) { }
 
     public SimpleSolver(Solver solver) : base(solver) { }
 
@@ -20,6 +20,7 @@ public class SimpleSolver : Solver
         return new SimpleSolver(sudoku);
     }
 
+    public SimpleSolver(PossibilityMatrix matrix) : base(matrix) { }
 
 
     public bool Solve(List<int> cellsToCheck)

@@ -1,9 +1,9 @@
 ﻿
 
-bool erasing = false;
+bool erasing = true;
 
 //create a new and shuffled sudoku
-Sudoku sudoku = new Sudoku();
+Board sudoku = new Board();
 sudoku.FullShuffle();
 
 
@@ -11,15 +11,6 @@ sudoku.FullShuffle();
 
 while (true)
 {
-    sudoku.Draw(erasing);
-
-    Solver solver = new SimpleSolver(sudoku);
-    Remover remover = new Remover(solver);
-
-    remover.Minimize();
-    sudoku.Draw(erasing);
-
-    solver.Solve();
     sudoku.Draw(erasing);
 
 
@@ -50,7 +41,9 @@ while (true)
 string GetCommand()
 {
 
-    Console.WriteLine("\n Enter a command to change one cell in the format of [column, row, new number].\n Rows and columns start at 1.\n");
+    Console.WriteLine("\n " +
+        "Enter a command to change one cell in the format of [column, row, new number].\n" +
+        "Rows and columns start at 1, count starts in the upper left corner.\n");
     return Console.ReadLine();
 
 }
@@ -88,7 +81,7 @@ int[] RetrieveThreeNumbers(string command)
 
 
 
-Sudoku GenerateExampleSudoku_Easy(Sudoku sudoku)
+Board GenerateExampleSudoku_Easy(Board sudoku)
 {
     //delete row
     for (int i = 0; i < 9; i++)
