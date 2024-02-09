@@ -1,6 +1,6 @@
 ﻿
 
-bool erasing = false;
+bool erasing = true;
 
 //create a new and shuffled sudoku
 Board sudoku = new Board();
@@ -13,12 +13,6 @@ while (true)
 {
     sudoku.Draw(erasing);
 
-    sudoku = GenerateExampleSudoku_Easy(sudoku);
-    Solver solver = new SimpleSolver(sudoku);
-    sudoku.Draw(erasing);
-
-    solver.Solve();
-    sudoku.Draw(erasing);
 
 
     //get a command
@@ -47,7 +41,9 @@ while (true)
 string GetCommand()
 {
 
-    Console.WriteLine("\n Enter a command to change one cell in the format of [column, row, new number].\n Rows and columns start at 1.\n");
+    Console.WriteLine("\n " +
+        "Enter a command to change one cell in the format of [column, row, new number].\n" +
+        "Rows and columns start at 1, count starts in the upper left corner.\n");
     return Console.ReadLine();
 
 }
