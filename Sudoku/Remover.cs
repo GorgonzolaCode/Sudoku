@@ -10,9 +10,9 @@ public class Remover
     private Random random = new Random();
 
 
-    public Remover(Solver solverP) 
+    public Remover(Solver solver) 
     { 
-        solver = solverP;
+        this.solver = solver;
     }
 
 
