@@ -179,7 +179,7 @@ public class Helper
 
 
 
-    static public int getBlockFirst(int position)
+    static public int GetBlockFirst(int position)
     {
         return
             position / 9 / 3 * 3 * 9 +
@@ -188,11 +188,39 @@ public class Helper
 
 
 
+    /// <summary>
+    /// Choose a random element of a list.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="list"></param>
+    /// <returns> Returns a random element from the list </returns>
+    static public T GetRandomElement<T>(List<T> list)
+    {
+        int size = list.Count();
+        int position = random.Next(size);
+        return list[position];
+    }
 
 
 
-
-
+    /// <summary>
+    /// Inverts a list of numbers.
+    /// </summary>
+    /// <param name="positions"></param>
+    /// <returns></returns>
+    static public List<int> InvertPositions(List<int> positions) 
+    { 
+        List<int> inverted = new List<int>();
+        for (int i = 0; i < 81; i++)
+        {
+            inverted.Add(i);
+        }
+        foreach (int position in positions) 
+        {
+            inverted.Remove(position);
+        }
+        return inverted;
+    }
 
 
 

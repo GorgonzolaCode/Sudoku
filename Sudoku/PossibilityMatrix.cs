@@ -12,8 +12,6 @@ public class PossibilityMatrix
 
     private List<int>[] options = new List<int>[81];
 
-    static private StreamWriter logFile = File.CreateText("solver.log");
-
 
     /// <summary>
     /// Generates a solver for a specific sudoku.
@@ -21,19 +19,8 @@ public class PossibilityMatrix
     /// <param name="sudoku"></param>
     public PossibilityMatrix(Board sudokuP)
     {
-        //Trace setup, as in tutorial
-        Trace.Listeners.Add(new TextWriterTraceListener(logFile));
-        Trace.AutoFlush = true;
-        Trace.WriteLine("Starting Solver Log");
-        Trace.WriteLine(String.Format("Started {0}", System.DateTime.Now.ToString()));
 
-        Trace.WriteLine("");
-
-        Trace.WriteLine("Given sudoku is:");
-        Trace.WriteLine(sudokuP.ToString());
         board = sudokuP;
-
-        Trace.WriteLine("");
 
         GetUnsolved();
         UpdateFullOptions();
@@ -50,6 +37,13 @@ public class PossibilityMatrix
     {
         board.Draw(erasing);
     }
+
+
+    public Sudoku GetSudoku()
+    {
+        return sudoku;
+    }
+
 
 
     public List<int> GetUnsolved()
@@ -85,7 +79,6 @@ public class PossibilityMatrix
     /// <param name="position"></param>
     private void UpdateCellOptions(int position)
     {
-        Trace.WriteLine($"Updating cell at position {position}: ");
         int value = board.Get(position);
 
         //set the options to the value if definite
@@ -93,16 +86,13 @@ public class PossibilityMatrix
         {
             options[position] = 
                 new List<int>() { value };
-            Trace.WriteLine($"The only option is {value}");
         }
         else
         {
             options[position] = 
                 new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-            Trace.WriteLine("All values are possible.");
         }
 
-        Trace.WriteLine("");
     }
 
 
@@ -250,146 +240,6 @@ public class PossibilityMatrix
     {
         return FixCell(row*9 + column);
     }
-
-    /*
-
-    /// <summary>
-    /// Tries to solve the sudoku by using the standard rules.
-    /// </summary>
-    public void RuleSolveFull()
-    {
-        for (int i = 0; i < 81; i++)
-        {
-            CheckAddUnique(i);
-        }
-
-        while (cellsToCheck.Count > 0)
-        {
-            RuleSolveCell(cellsToCheck.First());
-        }
-    }
-
-
-
-    /// <summary>
-    /// Tries to solve a cell via default rules.
-    /// </summary>
-    /// <param name="position"></param>
-    /// <returns> Returns, whether the cell was solved. </returns>
-    private bool RuleSolveCell(int position)
-    {
-        if (sudoku.Get(position) != 0) return false;
-
-        //reduce options via criteria
-        if (RowSolve(position) && FixCell(position))
-            {
-                return true;
-            }
-        if (ColSolve(position) && FixCell(position))
-            {
-                return true;
-            }
-        if (BlockSolve(position) && FixCell(position))
-            {
-                return true;
-            }
-
-        return false;
-    }
-
-
-
-    private bool RuleSolveCell(int column, int row)
-    {
-        return RuleSolveCell(row*9 + column);
-    }
-
-
-
-    private bool RowSolve(int position)
-    {
-        List<int> optionsLeft = GetOptions(position);
-
-        for (int i = 0; i < 9; i++)
-        {
-            optionsLeft.Remove(sudoku.Get(i, position/9));
-        }
-
-        return SetOptions(position, optionsLeft);
-    }
-
-
-
-    private bool ColSolve(int position)
-    {
-        List<int> optionsLeft = GetOptions(position);
-
-        for (int i = 0; i < 9; i++)
-        {
-            optionsLeft.Remove(sudoku.Get(position%9, i));
-        }
-
-        return SetOptions(position, optionsLeft);
-    }
-
-
-
-    private bool BlockSolve(int position)
-    {
-        List<int> optionsLeft = GetOptions(position);
-
-        for (int i = 0; i < 9; i++)
-        {
-            optionsLeft.Remove(sudoku.Get(
-                //start-of-block column + column shift
-                position%9/3*3 + i%3, 
-                //start-of-block row    + row shift
-                position/9/3*3 + i/3
-                ));
-        }
-
-        return SetOptions(position, optionsLeft);
-    }
-
-    
-
-    /// <summary>
-    /// Adds all relevant cells to a to-do-list after changing one.
-    /// </summary>
-    /// <param name="position"></param>
-    private void Consequence(int position)
-    {
-        //row
-        for (int i = 0; i < 9; i++)
-        {
-            CheckAddUnique(position/9*9 + i);
-        }
-        //column
-        for (int i = 0; i < 9; i++)
-        {
-            CheckAddUnique(position%9 + i*9);
-        }
-        //block
-        for (int i = 0; i < 9; i++)
-        {
-            CheckAddUnique(
-                Helper.getBlockFirst(position) +
-                i % 3 +
-                i / 3 * 9
-                );
-        }
-    }
-
-
-
-    private void CheckAddUnique(int position)
-    {
-        if (cellsToCheck.Contains(position)) return;
-        cellsToCheck.Add(position);
-    }
-
-
-    */
 
 
 }

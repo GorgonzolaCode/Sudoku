@@ -11,6 +11,15 @@ public class SimpleSolver : Solver
 
     public SimpleSolver(Board board) : base(board) { }
 
+    public SimpleSolver(Solver solver) : base(solver) { }
+
+
+    public override Solver GetCopy()
+    {
+        Sudoku sudoku = new Sudoku(matrix.GetSudoku());
+        return new SimpleSolver(sudoku);
+    }
+
     public SimpleSolver(PossibilityMatrix matrix) : base(matrix) { }
 
 
@@ -30,8 +39,8 @@ public class SimpleSolver : Solver
     }
 
 
-    
-    public override bool Solve()
+
+    override public bool Solve()
     {
         return Solve(matrix.GetUnsolved());
     }
@@ -43,8 +52,8 @@ public class SimpleSolver : Solver
     /// </summary>
     /// <param name="position"> position of the cell </param>
     /// <returns> Returns, whether the cell was solved. </returns>
-    private bool CellSolve(int position)
-    {
+    override public bool CellSolve(int position)
+    { 
         List<int> options = matrix.GetOptions(position);
 
         for (int i = 0; i < 9; i++)
@@ -57,7 +66,7 @@ public class SimpleSolver : Solver
 
             //block
             options.Remove(matrix.Get(
-                Helper.getBlockFirst(position) + i%3 + i/3*9
+                Helper.GetBlockFirst(position) + i%3 + i/3*9
                 ));
 
             //test if finished
