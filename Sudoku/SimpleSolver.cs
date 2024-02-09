@@ -14,6 +14,13 @@ public class SimpleSolver : Solver
     public SimpleSolver(Solver solver) : base(solver) { }
 
 
+    public override Solver GetCopy()
+    {
+        Sudoku sudoku = new Sudoku(matrix.GetSudoku());
+        return new SimpleSolver(sudoku);
+    }
+
+
 
     public bool Solve(List<int> cellsToCheck)
     {
@@ -31,8 +38,8 @@ public class SimpleSolver : Solver
     }
 
 
-    
-    public override bool Solve()
+
+    override public bool Solve()
     {
         return Solve(matrix.GetUnsolved());
     }
@@ -44,8 +51,8 @@ public class SimpleSolver : Solver
     /// </summary>
     /// <param name="position"> position of the cell </param>
     /// <returns> Returns, whether the cell was solved. </returns>
-    public override bool CellSolve(int position)
-    {
+    override public bool CellSolve(int position)
+    { 
         List<int> options = matrix.GetOptions(position);
 
         for (int i = 0; i < 9; i++)

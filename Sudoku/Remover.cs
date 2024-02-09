@@ -35,7 +35,7 @@ public class Remover
 
     private bool RemoveCell(int position)
     {
-        Solver copy = new SimpleSolver(solver);
+        Solver copy = solver.GetCopy();
 
         copy.Remove(position);
         if (copy.CellSolve(position))

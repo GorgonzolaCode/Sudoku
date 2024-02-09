@@ -24,14 +24,16 @@ public abstract class Solver
         matrix = new PossibilityMatrix(solver.GetSudoku());
     }
 
+    abstract public Solver GetCopy();
+
 
     /// <summary>
     /// Tries to solve the sudoku.
     /// </summary>
     /// <returns> Returns, whether the sudoku was solved. </returns>
-    public abstract bool Solve();
+    abstract public bool Solve();
 
-    public abstract bool CellSolve(int position);
+    abstract public bool CellSolve(int position);
 
 
     public int Get(int position)
