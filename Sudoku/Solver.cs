@@ -28,7 +28,7 @@ public abstract class Solver
 
     public Solver(Solver solver)
     {
-        matrix = new PossibilityMatrix(solver.GetSudoku());
+        matrix = new PossibilityMatrix(solver.GetBoard());
     }
 
     abstract public Solver GetCopy();
@@ -77,14 +77,14 @@ public abstract class Solver
 
     public void Remove(int position)
     {
-        matrix.SetCell(position, 0);
+        matrix.Set(position, 0);
     }
 
 
 
-    public Sudoku GetSudoku()
+    public Board GetBoard()
     {
-        return matrix.GetSudoku();
+        return matrix.GetBoard();
     }
 
     public List<int> GetUnsolved()

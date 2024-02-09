@@ -39,9 +39,9 @@ public class PossibilityMatrix
     }
 
 
-    public Sudoku GetSudoku()
+    public Board GetBoard()
     {
-        return sudoku;
+        return board;
     }
 
 

@@ -16,7 +16,7 @@ public class SimpleSolver : Solver
 
     public override Solver GetCopy()
     {
-        Sudoku sudoku = new Sudoku(matrix.GetSudoku());
+        Board sudoku = new Board(matrix.GetBoard());
         return new SimpleSolver(sudoku);
     }
 
