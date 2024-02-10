@@ -262,8 +262,8 @@ namespace Sudoku_Test
             }
             Assert.IsTrue(true);
         }
-
-
+        //first version: 2,6 min (cell solve)
+        //second version: 3,2 min (cell solve and full solve)
 
 
 

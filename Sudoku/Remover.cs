@@ -38,7 +38,7 @@ public class Remover
         Solver copy = solver.GetCopy();
 
         copy.Remove(position);
-        if (copy.CellSolve(position))
+        if (copy.CellSolve(position) || copy.Solve())
         {
             solver.Remove(position);
             return true;
