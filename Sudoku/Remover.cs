@@ -49,11 +49,20 @@ public class Remover
 
 
 
+    public void Draw(bool erasing)
+    {
+        solver.Draw(erasing);
+    }
 
+    public void FullShuffle()
+    {
+        solver.FullShuffle();
+    }
 
-
-
-
+    public void Set(int column, int row, int value)
+    {
+        solver.Set(row * 9 + column, value);
+    }
 
 
 }

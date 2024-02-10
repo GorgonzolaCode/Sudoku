@@ -242,5 +242,10 @@ public class PossibilityMatrix
     }
 
 
+
+    public void FullShuffle()
+    {
+        board.FullShuffle();
+    }
 }
 

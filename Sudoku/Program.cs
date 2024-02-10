@@ -1,9 +1,10 @@
 ﻿
-
+int[] cmd = null;
 bool erasing = true;
 
 //create a new and shuffled sudoku
-Board sudoku = new Board();
+Board board = new Board();
+Remover sudoku = new Remover(new SimpleSolver(board));
 sudoku.FullShuffle();
 
 
@@ -17,8 +18,11 @@ while (true)
 
     //get a command
     string command = GetCommand();
+    command.Trim();
 
-    int[] cmd = RetrieveThreeNumbers(command);
+    if (command.StartsWith("unsolve", StringComparison.OrdinalIgnoreCase)) sudoku.Minimize();
+    else cmd = RetrieveThreeNumbers(command);
+
 
 
     //execute command
@@ -43,7 +47,8 @@ string GetCommand()
 
     Console.WriteLine("\n " +
         "Enter a command to change one cell in the format of [column, row, new number].\n" +
-        "Rows and columns start at 1, count starts in the upper left corner.\n");
+        "Rows and columns start at 1, count starts in the upper left corner.\n" +
+        "Type 'unsolve' to reduce the sudoku as much as possible.\n");
     return Console.ReadLine();
 
 }

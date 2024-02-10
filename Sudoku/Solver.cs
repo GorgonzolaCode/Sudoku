@@ -117,8 +117,10 @@ public abstract class Solver
         return matrix.ToString();
     }
 
-
-
+    public void FullShuffle()
+    {
+        matrix.FullShuffle();
+    }
 
 
 
