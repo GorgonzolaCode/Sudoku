@@ -70,5 +70,23 @@ public class Remover
         return solver.Solve();
     }
 
+
+    public bool IsSolved()
+    {
+        return solver.IsSolved();
+    }
+
+
+    public bool IsCorrect()
+    {
+        return solver.IsCorrect();
+    }
+
+
+    public bool IsSolvable()
+    {
+        return solver.IsSolvable();
+    }
+
 }
 

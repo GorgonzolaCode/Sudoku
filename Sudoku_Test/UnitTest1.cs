@@ -237,15 +237,14 @@ namespace Sudoku_Test
         [TestMethod]
         public void Test_Remover_Solve()
         {
-            Sudoku sudoku = new Sudoku();
-            sudoku.FullShuffle();
-            Solver solver = new SimpleSolver(new Sudoku(sudoku));
+            Board board = new Board();
+            Remover remover = new Remover(new SimpleSolver(board));
 
-            Remover remover = new Remover(solver);
+            remover.FullShuffle();
             remover.Minimize();
-            solver.Solve();
+            remover.Solve();
 
-            Assert.IsTrue(solver.IsSolved());
+            Assert.IsTrue(remover.IsSolved());
         }
 
 
