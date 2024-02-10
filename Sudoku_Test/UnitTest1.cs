@@ -242,10 +242,41 @@ namespace Sudoku_Test
 
             remover.FullShuffle();
             remover.Minimize();
-            remover.Solve();
 
+            Assert.IsTrue(remover.IsSolvable());
+
+            remover.Solve();
             Assert.IsTrue(remover.IsSolved());
         }
+
+
+        [TestMethod]
+        public void Time_Minimization()
+        {
+            Board board = new Board();
+            Remover remover = new Remover(new SimpleSolver(board));
+            for (int i = 0; i < 10; i++)
+            {
+                remover.Minimize();
+                remover.Solve();
+            }
+            Assert.IsTrue(true);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
