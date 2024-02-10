@@ -237,16 +237,46 @@ namespace Sudoku_Test
         [TestMethod]
         public void Test_Remover_Solve()
         {
-            Sudoku sudoku = new Sudoku();
-            sudoku.FullShuffle();
-            Solver solver = new SimpleSolver(new Sudoku(sudoku));
+            Board board = new Board();
+            Remover remover = new Remover(new SimpleSolver(board));
 
-            Remover remover = new Remover(solver);
+            remover.FullShuffle();
             remover.Minimize();
-            solver.Solve();
 
-            Assert.IsTrue(solver.IsSolved());
+            Assert.IsTrue(remover.IsSolvable());
+
+            remover.Solve();
+            Assert.IsTrue(remover.IsSolved());
         }
+
+
+        [TestMethod]
+        public void Time_Minimization()
+        {
+            Board board = new Board();
+            Remover remover = new Remover(new SimpleSolver(board));
+            for (int i = 0; i < 10; i++)
+            {
+                remover.Minimize();
+                remover.Solve();
+            }
+            Assert.IsTrue(true);
+        }
+        //first version: 2,6 min (cell solve)
+        //second version: 3,2 min (cell solve and full solve)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
