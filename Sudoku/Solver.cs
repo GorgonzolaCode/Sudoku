@@ -110,6 +110,8 @@ public abstract class Solver
     public void Draw(bool erasing)
     {
         matrix.Draw(erasing);
+        if (IsSolvable()) Console.WriteLine("The sudoku can be solved by the algorithm. Just type 'solve'.");
+        else Console.WriteLine("The algorithm can't solve the sudoku.");
     }
 
     public override string ToString()
@@ -120,7 +122,11 @@ public abstract class Solver
 
 
 
-
+    /// <summary>
+    /// Tells, if the Solver can solve the sudoku.
+    /// </summary>
+    /// <returns></returns>
+    abstract public bool IsSolvable();
 
 
 

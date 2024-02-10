@@ -218,7 +218,7 @@ public class Board
 
         Console.WriteLine(ToString());
 
-        if (IsCorrect()) Console.WriteLine("\n The sudoku has no contradictions.");
+        if (IsCorrect()) Console.WriteLine("The sudoku has no contradictions.");
         else Console.WriteLine("!!!The sudoku has a contradiction!!!");
 
         Trace.WriteLine("The sudoku was drawn: ");

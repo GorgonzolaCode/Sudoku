@@ -36,6 +36,12 @@ public class PossibilityMatrix
     public void Draw(bool erasing)
     {
         board.Draw(erasing);
+        if (IsCorrect()) Console.WriteLine("The sudoku has no obvious mistakes.");
+        else Console.WriteLine("!!!There is a mistake!!!");
+
+        if (IsSolved()) Console.WriteLine("The sudoku is solved.");
+        else Console.WriteLine("The sudoku is not yet solved.");
+
     }
 
 

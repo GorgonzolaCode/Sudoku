@@ -14,7 +14,7 @@ public class SimpleSolver : Solver
     public SimpleSolver(Solver solver) : base(solver) { }
 
 
-    public override Solver GetCopy()
+    override public Solver GetCopy()
     {
         Board sudoku = new Board(matrix.GetBoard());
         return new SimpleSolver(sudoku);
@@ -77,10 +77,12 @@ public class SimpleSolver : Solver
     }
 
 
-
-
-
-
+    override public bool IsSolvable()
+    {
+        Solver copy = GetCopy();
+        if (copy.Solve()) return true;
+        else return false;
+    }
 
 
 
