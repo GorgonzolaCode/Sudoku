@@ -65,5 +65,10 @@ public class Remover
     }
 
 
+    public bool Solve()
+    {
+        return solver.Solve();
+    }
+
 }
 

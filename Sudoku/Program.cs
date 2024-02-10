@@ -1,5 +1,5 @@
 ﻿
-int[] cmd = null;
+int[]? cmd;
 bool erasing = true;
 
 //create a new and shuffled sudoku
@@ -17,13 +17,17 @@ while (true)
 
 
     //get a command
+    cmd = null;
     string command = GetCommand();
     command.Trim();
 
-    if (command.StartsWith("unsolve", StringComparison.OrdinalIgnoreCase)) sudoku.Minimize();
+    if (command.StartsWith("unsolve", StringComparison.OrdinalIgnoreCase)) 
+        sudoku.Minimize();
+    else if (command.StartsWith("solve", StringComparison.OrdinalIgnoreCase))
+        sudoku.Solve();
     else cmd = RetrieveThreeNumbers(command);
 
-
+    
 
     //execute command
     if ((cmd != null) && (cmd[0] > 0) && (cmd[1] > 0))
