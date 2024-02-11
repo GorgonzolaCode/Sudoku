@@ -249,7 +249,9 @@ public class Board
             {
 
                 //number
-                result += board[row, col];
+                int value = board[row, col];
+                if (value == 0) result += " ";
+                else result += value;
 
 
                 //vertical divider
