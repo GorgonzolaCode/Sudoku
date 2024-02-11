@@ -78,7 +78,7 @@ public class SmartSolver : Solver
     /// Does setup for the matrix. Updates all options.
     /// </summary>
     /// <returns> Returns a list of unsolved positions. </returns>
-    private List<int> UpdateMatrix()
+    protected List<int> UpdateMatrix()
     {
         List<int> solved = matrix.FixAll();
         List<int> unsolved = Helper.InvertPositions(solved);
