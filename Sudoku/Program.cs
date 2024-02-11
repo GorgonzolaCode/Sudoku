@@ -4,7 +4,7 @@ bool erasing = true;
 
 //create a new and shuffled sudoku
 Board board = new Board();
-Remover sudoku = new Remover(new SimpleSolver(board));
+Remover sudoku = new Remover(new SmartSolver(board));
 sudoku.FullShuffle();
 
 

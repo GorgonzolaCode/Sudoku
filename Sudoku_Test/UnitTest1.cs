@@ -135,7 +135,7 @@ namespace Sudoku_Test
             PossibilityMatrix matrix = new PossibilityMatrix(sudoku);
 
             //no changes when solved
-            Assert.AreEqual(matrix.FixAll(), false);
+            Assert.AreEqual(matrix.FixAll().Count, 0);
         }
 
 
@@ -196,7 +196,23 @@ namespace Sudoku_Test
             }
         }
 
+        [TestMethod]
+        public void Test_Helper_Inverter()
+        {
+            List<int> positions = new List<int>();
+            List<int> inverted = Helper.InvertPositions(positions);
+            Assert.AreEqual(positions.Count, 0);
+            Assert.AreEqual(inverted.Count, 81);
 
+            for (int i = 0; i < 12; i++)
+            {
+                positions.Add(i);
+            }
+            inverted = Helper.InvertPositions(positions);
+
+            Assert.AreEqual(positions.Count, 12);
+            Assert.AreEqual(inverted.Count, 69);
+        }
 
 
         [TestMethod]
@@ -235,7 +251,7 @@ namespace Sudoku_Test
 
 
         [TestMethod]
-        public void Test_Remover_Solve()
+        public void Test_Remover_Solve_Simple()
         {
             Board board = new Board();
             Remover remover = new Remover(new SimpleSolver(board));
@@ -251,7 +267,7 @@ namespace Sudoku_Test
 
 
         [TestMethod]
-        public void Time_Minimization()
+        public void Time_Minimize_Simple()
         {
             Board board = new Board();
             Remover remover = new Remover(new SimpleSolver(board));
@@ -263,10 +279,37 @@ namespace Sudoku_Test
             Assert.IsTrue(true);
         }
         //first version: 2,6 min (cell solve)
-        //second version: 3,2 min (cell solve and full solve)
+        //second version: 3,2 min/5,6 min  (cell solve and full solve)
 
 
+        [TestMethod]
+        public void Test_Remover_Solve_Smart()
+        {
+            Board board = new Board();
+            Remover remover = new Remover(new SmartSolver(board));
 
+            remover.FullShuffle();
+            remover.Minimize();
+
+            Assert.IsTrue(remover.IsSolvable());
+
+            remover.Solve();
+            Assert.IsTrue(remover.IsSolved());
+        }
+
+        [TestMethod]
+        public void Time_Minimize_Smart()
+        {
+            Board board = new Board();
+            Remover remover = new Remover(new SmartSolver(board));
+            for (int i = 0; i < 10; i++)
+            {
+                remover.Minimize();
+                remover.Solve();
+            }
+            Assert.IsTrue(true);
+        }
+        //5,2 min
 
 
 

@@ -206,18 +206,18 @@ public class PossibilityMatrix
     /// <summary>
     /// Fixes the value of cells with only one possible value.
     /// </summary>
-    /// <returns> Returns, whether a cell was solved. </returns>
-    public bool FixAll()
+    /// <returns> Returns the list of fixed cells. </returns>
+    public List<int> FixAll()
     {
         List<int> unsolved = GetUnsolved();
-        bool changed = false;
+        List<int> fixedPositions = new List<int>();
 
         foreach (int i in unsolved)
         {
-            changed = (FixCell(i) || changed);
+            if (FixCell(i)) fixedPositions.Add(i);
         }
-
-        return changed;
+        fixedPositions.AddRange(Helper.InvertPositions(unsolved));
+        return fixedPositions;
     }
 
 

@@ -128,7 +128,11 @@ public abstract class Solver
     /// Tells, if the Solver can solve the sudoku.
     /// </summary>
     /// <returns></returns>
-    abstract public bool IsSolvable();
+    public bool IsSolvable()
+    {
+        Solver copy = GetCopy();
+        return copy.Solve();
+    }
 
 
 

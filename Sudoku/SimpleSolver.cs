@@ -77,13 +77,6 @@ public class SimpleSolver : Solver
     }
 
 
-    override public bool IsSolvable()
-    {
-        Solver copy = GetCopy();
-        if (copy.Solve()) return true;
-        else return false;
-    }
-
 
 
 
